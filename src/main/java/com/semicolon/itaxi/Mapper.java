@@ -14,6 +14,6 @@ public class Mapper {
     }
 
     public static void map(User savedUser, RegisterUserResponse response) {
-        response.setMessage("Welcome " + savedUser.getName() + "to iTaxi. \nWe wish you safe, peaceful and fast trips");
+        response.setMessage("Welcome " + savedUser.getName() + " to iTaxi. We wish you safe, peaceful and fast trips");
     }
 }
