@@ -1,13 +1,14 @@
 package com.semicolon.itaxi.dto.requests;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookTripRequest {
+    @NonNull
     private String pickUpAddress;
+    @NonNull
     private String dropOffAddress;
+    private String email;
 }

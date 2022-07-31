@@ -1,6 +1,7 @@
 package com.semicolon.itaxi;
 
 import com.semicolon.itaxi.data.models.User;
+import com.semicolon.itaxi.dto.requests.BookTripRequest;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
 import com.semicolon.itaxi.dto.response.RegisterUserResponse;
 
@@ -16,5 +17,10 @@ public class Mapper {
 
     public static void map(User savedUser, RegisterUserResponse response) {
         response.setMessage("Welcome " + savedUser.getName() + " to iTaxi. We wish you safe, peaceful and fast trips");
+    }
+
+    public static void map(BookTripRequest request, User savedUser) {
+        savedUser.setPickUpAddress(request.getPickUpAddress());
+        savedUser.setDropOffAddress(request.getDropOffAddress());
     }
 }
