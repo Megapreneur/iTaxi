@@ -7,6 +7,8 @@ import com.semicolon.itaxi.dto.requests.LoginUserRequest;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
 import com.semicolon.itaxi.dto.response.LoginUserResponse;
 import com.semicolon.itaxi.dto.response.RegisterUserResponse;
+import com.semicolon.itaxi.exceptions.IncorrectPasswordException;
+import com.semicolon.itaxi.exceptions.InvalidUserException;
 import com.semicolon.itaxi.exceptions.UserExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,10 +37,12 @@ public class UserServiceImpl implements UserService{
         Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
         if (savedUser.isPresent()){
             if (savedUser.get().getPassword().equals(request.getPassword())){
-
+                LoginUserResponse response = new LoginUserResponse();
+                response.setMessage("Welcome back " + savedUser.get().getName() + ". Where will you like to go today?");
+                return response;
             }
+            throw new IncorrectPasswordException("Incorrect Password");
         }
-
-        return null;
+        throw new InvalidUserException("Invalid Email");
     }
 }
