@@ -11,6 +11,7 @@ public class Mapper {
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setAddress(request.getAddress());
+        user.setPassword(user.getPassword());
     }
 
     public static void map(User savedUser, RegisterUserResponse response) {

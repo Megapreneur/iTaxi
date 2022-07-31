@@ -3,11 +3,15 @@ package com.semicolon.itaxi.services;
 import com.semicolon.itaxi.Mapper;
 import com.semicolon.itaxi.data.models.User;
 import com.semicolon.itaxi.data.repositories.UserRepository;
+import com.semicolon.itaxi.dto.requests.LoginUserRequest;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
+import com.semicolon.itaxi.dto.response.LoginUserResponse;
 import com.semicolon.itaxi.dto.response.RegisterUserResponse;
 import com.semicolon.itaxi.exceptions.UserExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -22,8 +26,19 @@ public class UserServiceImpl implements UserService{
         Mapper.map(request, user);
         User savedUser = userRepository.save(user);
         RegisterUserResponse response = new RegisterUserResponse();
-
         Mapper.map(savedUser, response);
         return response;
+    }
+
+    @Override
+    public LoginUserResponse login(LoginUserRequest request) {
+        Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
+        if (savedUser.isPresent()){
+            if (savedUser.get().getPassword().equals(request.getPassword())){
+
+            }
+        }
+
+        return null;
     }
 }
