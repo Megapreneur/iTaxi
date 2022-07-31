@@ -3,8 +3,10 @@ package com.semicolon.itaxi.services;
 import com.semicolon.itaxi.Mapper;
 import com.semicolon.itaxi.data.models.User;
 import com.semicolon.itaxi.data.repositories.UserRepository;
+import com.semicolon.itaxi.dto.requests.BookTripRequest;
 import com.semicolon.itaxi.dto.requests.LoginUserRequest;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
+import com.semicolon.itaxi.dto.response.BookTripResponse;
 import com.semicolon.itaxi.dto.response.LoginUserResponse;
 import com.semicolon.itaxi.dto.response.RegisterUserResponse;
 import com.semicolon.itaxi.exceptions.IncorrectPasswordException;
@@ -44,5 +46,11 @@ public class UserServiceImpl implements UserService{
             throw new IncorrectPasswordException("Incorrect Password");
         }
         throw new InvalidUserException("Invalid Email");
+    }
+
+    @Override
+    public BookTripResponse book(BookTripRequest request) {
+
+        return null;
     }
 }

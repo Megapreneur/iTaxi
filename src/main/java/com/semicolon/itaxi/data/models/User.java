@@ -27,4 +27,6 @@ public class User {
     @NonNull
     private String address;
     private String password;
+    private String pickUpAddress;
+    private String dropOffAddress;
 }
