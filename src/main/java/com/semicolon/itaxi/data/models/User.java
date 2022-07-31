@@ -21,7 +21,7 @@ public class User {
     @NonNull
     private String name;
     @NonNull
-    private String emailAddress;
+    private String email;
     @NonNull
     private String phoneNumber;
     @NonNull

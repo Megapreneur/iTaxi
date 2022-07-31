@@ -1,5 +1,6 @@
 package com.semicolon.itaxi.services;
 
+import com.semicolon.itaxi.Mapper;
 import com.semicolon.itaxi.data.models.User;
 import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
@@ -18,7 +19,11 @@ public class UserServiceImpl implements UserService{
         if (userRepository.existsByEmail(request.getEmail())){throw  new UserExistException("Email Already Exist");
         }
         User user = new User();
+        Mapper.map(request, user);
+        User savedUser = userRepository.save(user);
+        RegisterUserResponse response = new RegisterUserResponse();
 
-        return null;
+        Mapper.map(savedUser, response);
+        return response;
     }
 }
