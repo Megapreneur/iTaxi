@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public BookTripResponse book(BookTripRequest request) {
+        User user = new User();
        
 
         return null;
