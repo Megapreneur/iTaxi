@@ -3,8 +3,9 @@ package com.semicolon.itaxi.services;
 import com.semicolon.itaxi.data.models.Driver;
 import com.semicolon.itaxi.data.repositories.DriverRepository;
 import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
-import com.semicolon.itaxi.dto.response.RegisterDriverResponse;
+import com.semicolon.itaxi.dto.response.DriverDto;
 import com.semicolon.itaxi.exceptions.UserExistException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,10 @@ public class DriverServiceImpl implements DriverService{
     @Autowired
 
     private DriverRepository driverRepository;
+    private ModelMapper modelMapper;
 
     @Override
-    public RegisterDriverResponse register(RegisterDriverRequest request) {
+    public DriverDto register(RegisterDriverRequest request) {
         if (driverRepository.existsByEmail(request.getEmail()))throw  new UserExistException("Email Already Exist");
         Driver driver = Driver.builder()
                 .name(request.getName())
@@ -28,7 +30,6 @@ public class DriverServiceImpl implements DriverService{
                 .carColour(request.getCarColour())
                 .build();
         Driver savedDriver = driverRepository.save(driver);
-
-        return null;
+        return modelMapper.map(savedDriver, DriverDto.class);
     }
 }

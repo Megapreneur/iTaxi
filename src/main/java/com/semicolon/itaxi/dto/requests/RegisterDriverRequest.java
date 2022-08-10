@@ -1,5 +1,6 @@
 package com.semicolon.itaxi.dto.requests;
 
+import com.semicolon.itaxi.data.models.Gender;
 import com.sun.istack.NotNull;
 import lombok.*;
 
@@ -22,5 +23,7 @@ public class RegisterDriverRequest {
     private String carType;
     @NonNull
     private String carColour;
+    @NotNull
+    private Gender gender;
 
 }

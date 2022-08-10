@@ -1,6 +1,7 @@
 package com.semicolon.itaxi.data.models;
 
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Entity(name = "Drivers")
 @Builder
+@Validated
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

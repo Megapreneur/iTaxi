@@ -1,8 +1,8 @@
 package com.semicolon.itaxi.services;
 
 import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
-import com.semicolon.itaxi.dto.response.RegisterDriverResponse;
+import com.semicolon.itaxi.dto.response.DriverDto;
 
 public interface DriverService{
-    RegisterDriverResponse register(RegisterDriverRequest request);
+    DriverDto register(RegisterDriverRequest request);
 }
