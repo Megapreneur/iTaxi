@@ -1,9 +1,6 @@
 package com.semicolon.itaxi.data.models;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,8 +9,9 @@ import javax.persistence.Id;
 
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
-@Entity
+@AllArgsConstructor
+@Entity(name = "Drivers")
+@Builder
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

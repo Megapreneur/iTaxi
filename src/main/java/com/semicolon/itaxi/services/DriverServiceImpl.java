@@ -1,5 +1,6 @@
 package com.semicolon.itaxi.services;
 
+import com.semicolon.itaxi.data.models.Driver;
 import com.semicolon.itaxi.data.repositories.DriverRepository;
 import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
 import com.semicolon.itaxi.dto.response.RegisterDriverResponse;
@@ -17,6 +18,16 @@ public class DriverServiceImpl implements DriverService{
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) {
         if (driverRepository.existsByEmail(request.getEmail()))throw  new UserExistException("Email Already Exist");
+        Driver driver = Driver.builder()
+                .name(request.getName())
+                .address(request.getAddress())
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .carType(request.getCarType())
+                .carNumber(request.getCarNumber())
+                .carColour(request.getCarColour())
+                .build();
+        Driver savedDriver = driverRepository.save(driver);
 
         return null;
     }
