@@ -1,6 +1,6 @@
 package com.semicolon.itaxi.dto.requests;
 
-import com.semicolon.itaxi.data.models.Gender;
+import com.semicolon.itaxi.data.models.enums.Gender;
 import com.sun.istack.NotNull;
 import lombok.*;
 
