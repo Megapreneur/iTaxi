@@ -29,4 +29,5 @@ public class Driver {
     private String carNumber;
     private String carType;
     private String carColour;
+    private String password;
 }
