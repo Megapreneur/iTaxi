@@ -5,10 +5,9 @@ import com.semicolon.itaxi.data.models.User;
 import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.BookTripRequest;
 import com.semicolon.itaxi.dto.requests.LoginUserRequest;
+import com.semicolon.itaxi.dto.requests.PaymentRequest;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
-import com.semicolon.itaxi.dto.response.BookTripResponse;
-import com.semicolon.itaxi.dto.response.LoginUserResponse;
-import com.semicolon.itaxi.dto.response.RegisterUserResponse;
+import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.IncorrectPasswordException;
 import com.semicolon.itaxi.exceptions.InvalidUserException;
 import com.semicolon.itaxi.exceptions.UserExistException;
@@ -46,6 +45,21 @@ public class UserServiceImpl implements UserService{
             throw new IncorrectPasswordException("Incorrect Password");
         }
         throw new InvalidUserException("Invalid Email");
+    }
+
+    @Override
+    public BookTripResponse bookARide(BookTripRequest request) {
+        return null;
+    }
+
+    @Override
+    public PaymentResponse makePayment(PaymentRequest paymentRequest) {
+        return null;
+    }
+
+    @Override
+    public UserResponse feedback(String message) {
+        return null;
     }
 
     @Override

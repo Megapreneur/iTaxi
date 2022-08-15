@@ -1,33 +1,32 @@
 package com.semicolon.itaxi.data.models;
 
+import com.semicolon.itaxi.data.models.enums.Gender;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "Drivers")
-@Builder
 @Validated
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @NonNull
+    private long id;
     private String name;
-    @NonNull
     private String address;
-    @NonNull
+    @Valid
+    @Email
     private String email;
-    @NonNull
     private String phoneNumber;
     private String carNumber;
     private String carType;
     private String carColour;
     private String password;
+    @Enumerated(value = EnumType.STRING)
+    private Gender gender;
 }

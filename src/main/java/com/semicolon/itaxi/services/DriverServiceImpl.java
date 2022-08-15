@@ -28,6 +28,7 @@ public class DriverServiceImpl implements DriverService{
                 .carType(request.getCarType())
                 .carNumber(request.getCarNumber())
                 .carColour(request.getCarColour())
+                .gender(request.getGender())
                 .build();
         Driver savedDriver = driverRepository.save(driver);
         return modelMapper.map(savedDriver, DriverDto.class);
