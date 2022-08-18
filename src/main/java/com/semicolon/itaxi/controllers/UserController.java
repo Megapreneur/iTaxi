@@ -1,17 +1,17 @@
 package com.semicolon.itaxi.controllers;
 
+import com.semicolon.itaxi.dto.requests.BookTripRequest;
 import com.semicolon.itaxi.dto.requests.LoginUserRequest;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
+import com.semicolon.itaxi.dto.response.BookTripResponse;
 import com.semicolon.itaxi.dto.response.LoginUserResponse;
 import com.semicolon.itaxi.dto.response.RegisterUserResponse;
 import com.semicolon.itaxi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
-@RequestMapping("/iTaxi")
+@RequestMapping("/api/v1/users")
 public class UserController {
     @Autowired
     private UserService service;
@@ -22,5 +22,10 @@ public class UserController {
     @PostMapping("/login")
     public LoginUserResponse login (@RequestBody LoginUserRequest request){
         return service.login(request);
+    }
+    @PatchMapping("/orderRide")
+    public BookTripResponse bookARide (@RequestBody BookTripRequest request){
+        return service.bookARide(request);
+
     }
 }

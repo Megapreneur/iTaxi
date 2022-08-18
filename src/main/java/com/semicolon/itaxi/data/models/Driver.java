@@ -13,6 +13,7 @@ import javax.validation.constraints.Email;
 @AllArgsConstructor
 @Entity(name = "Drivers")
 @Validated
+@Builder
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

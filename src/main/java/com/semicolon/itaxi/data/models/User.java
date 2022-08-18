@@ -17,6 +17,16 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "Users")
 public class User {
+
+    public User(@NonNull String name, @NonNull String email, @NonNull String phoneNumber, @NonNull String address, String password, Gender gender) {
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.password = password;
+        this.gender = gender;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

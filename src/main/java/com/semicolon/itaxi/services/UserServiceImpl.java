@@ -1,6 +1,5 @@
 package com.semicolon.itaxi.services;
 
-import com.semicolon.itaxi.Mapper;
 import com.semicolon.itaxi.data.models.User;
 import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.BookTripRequest;
@@ -11,25 +10,26 @@ import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.IncorrectPasswordException;
 import com.semicolon.itaxi.exceptions.InvalidUserException;
 import com.semicolon.itaxi.exceptions.UserExistException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService{
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail()))throw  new UserExistException("Email Already Exist");
 
-        User user = new User();
-        Mapper.map(request, user);
+        User user = new User(request.getName(), request.getEmail(), request.getPhoneNumber(), request.getAddress(),
+                request.getPassword(), request.getGender());
         User savedUser = userRepository.save(user);
         RegisterUserResponse response = new RegisterUserResponse();
-        Mapper.map(savedUser, response);
+        response.setMessage(savedUser.getName() + " your registration is successful");
         return response;
     }
 
@@ -49,7 +49,17 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public BookTripResponse bookARide(BookTripRequest request) {
-        return null;
+        Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
+        if (savedUser.isPresent()){
+            savedUser.get().setPickUpAddress(request.getPickUpAddress());
+            savedUser.get().setDropOffAddress(request.getDropOffAddress());
+            savedUser.get().setEmail(request.getEmail());
+            BookTripResponse response = new BookTripResponse();
+            response.setMessage("Your trip from " + savedUser.get().getPickUpAddress() + " to "
+                    + savedUser.get().getDropOffAddress() + " was ordered at " + response.getDateOfRide());
+            return response ;
+        }
+        throw new InvalidUserException("Invalid Email") ;
     }
 
     @Override
@@ -62,11 +72,4 @@ public class UserServiceImpl implements UserService{
         return null;
     }
 
-    @Override
-    public BookTripResponse book(BookTripRequest request) {
-        User user = new User();
-       
-
-        return null;
-    }
 }

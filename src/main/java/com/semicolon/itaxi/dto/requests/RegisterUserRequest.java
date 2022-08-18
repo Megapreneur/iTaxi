@@ -1,5 +1,6 @@
 package com.semicolon.itaxi.dto.requests;
 
+import com.semicolon.itaxi.data.models.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,5 @@ public class RegisterUserRequest {
     private String phoneNumber;
     private String address;
     private String password;
+    private Gender gender;
 }

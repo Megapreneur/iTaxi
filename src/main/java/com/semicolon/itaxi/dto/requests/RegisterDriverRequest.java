@@ -4,6 +4,9 @@ import com.semicolon.itaxi.data.models.enums.Gender;
 import com.sun.istack.NotNull;
 import lombok.*;
 
+import javax.persistence.Column;
+import javax.validation.constraints.Email;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,19 +14,15 @@ import lombok.*;
 @Builder
 public class RegisterDriverRequest {
     private String name;
-    @NonNull
     private String address;
-    @NotNull
+    @Email
+    @Column(unique = true)
     private String email;
-    @NonNull
+    @Column(unique = true)
     private String phoneNumber;
-    @NonNull
     private String carNumber;
-    @NonNull
     private String carType;
-    @NonNull
     private String carColour;
-    @NotNull
     private Gender gender;
     private String password;
 
