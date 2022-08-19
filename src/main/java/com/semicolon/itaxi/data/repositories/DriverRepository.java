@@ -10,4 +10,17 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     boolean existsByEmail(String email);
 
 
+    Driver findByLocation(String location);
+
+//    String getName();
+//
+//    String getPhoneNumber();
+//
+//    String getCarNumber();
+//
+//    String getCarType();
+//
+//    String getGender();
+//
+//    String getLocation();
 }

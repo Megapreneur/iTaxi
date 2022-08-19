@@ -1,6 +1,9 @@
 package com.semicolon.itaxi.services;
 
+import com.semicolon.itaxi.data.models.Driver;
+import com.semicolon.itaxi.data.models.Payment;
 import com.semicolon.itaxi.data.models.User;
+import com.semicolon.itaxi.data.repositories.DriverRepository;
 import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.BookTripRequest;
 import com.semicolon.itaxi.dto.requests.LoginUserRequest;
@@ -9,8 +12,10 @@ import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.IncorrectPasswordException;
 import com.semicolon.itaxi.exceptions.InvalidUserException;
+import com.semicolon.itaxi.exceptions.NoDriverFoundException;
 import com.semicolon.itaxi.exceptions.UserExistException;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,7 +23,11 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService{
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private DriverService driverService;
+
 
 
     @Override
@@ -48,14 +57,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public BookTripResponse bookARide(BookTripRequest request) {
+    public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException {
         Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
         if (savedUser.isPresent()){
             savedUser.get().setPickUpAddress(request.getPickUpAddress());
             savedUser.get().setDropOffAddress(request.getDropOffAddress());
-            savedUser.get().setEmail(request.getEmail());
             BookTripResponse response = new BookTripResponse();
-            response.setMessage("Your trip from " + savedUser.get().getPickUpAddress() + " to "
+            response.setMessage("You have been connected to " + driverService.getDriver(request.getLocation()) +". Your trip from " + savedUser.get().getPickUpAddress() + " to "
                     + savedUser.get().getDropOffAddress() + " was ordered at " + response.getDateOfRide());
             return response ;
         }

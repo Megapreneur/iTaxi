@@ -6,6 +6,7 @@ import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
 import com.semicolon.itaxi.dto.response.BookTripResponse;
 import com.semicolon.itaxi.dto.response.LoginUserResponse;
 import com.semicolon.itaxi.dto.response.RegisterUserResponse;
+import com.semicolon.itaxi.exceptions.NoDriverFoundException;
 import com.semicolon.itaxi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,8 @@ public class UserController {
     public LoginUserResponse login (@RequestBody LoginUserRequest request){
         return service.login(request);
     }
-    @PatchMapping("/orderRide")
-    public BookTripResponse bookARide (@RequestBody BookTripRequest request){
+    @GetMapping("/orderRide")
+    public BookTripResponse bookARide (@RequestBody BookTripRequest request) throws NoDriverFoundException {
         return service.bookARide(request);
 
     }

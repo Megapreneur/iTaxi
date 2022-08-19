@@ -18,19 +18,24 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DriverDto extends RepresentationModel<DriverDto> implements Serializable {
-    private Integer id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.SCALAR, pattern = "dd-MM-yyyy")
-    private LocalDate dob;
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.SCALAR, pattern = "dd-MM-yyyy")
-    private LocalDate dateJoined;
-    private Gender gender;
+public class DriverDto{
+
+    private String message;
+//    private Integer id;
+    private String name;
+    private String phoneNumber;
+    private String model;
+    private String vehicleNumber;
+    private String color;
+//    private String email;
+//    @JsonDeserialize(using = LocalDateDeserializer.class)
+//    @JsonSerialize(using = LocalDateSerializer.class)
+//    @JsonFormat(shape = JsonFormat.Shape.SCALAR, pattern = "dd-MM-yyyy")
+//    private LocalDate dob;
+//    @JsonDeserialize(using = LocalDateDeserializer.class)
+//    @JsonSerialize(using = LocalDateSerializer.class)
+//    @JsonFormat(shape = JsonFormat.Shape.SCALAR, pattern = "dd-MM-yyyy")
+//    private LocalDate dateJoined;
+
 
 }

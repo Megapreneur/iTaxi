@@ -19,6 +19,7 @@ public class Driver {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+
     private String address;
     @Valid
     @Email
@@ -30,4 +31,10 @@ public class Driver {
     private String password;
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
+    @ManyToOne
+    @JoinColumn(name = "vehicle_vehicle_id")
+    private Vehicle vehicle;
+    private String location;
+
+
 }

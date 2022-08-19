@@ -25,5 +25,6 @@ public class RegisterDriverRequest {
     private String carColour;
     private Gender gender;
     private String password;
+    private String location;
 
 }

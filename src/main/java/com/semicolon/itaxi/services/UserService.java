@@ -5,11 +5,12 @@ import com.semicolon.itaxi.dto.requests.LoginUserRequest;
 import com.semicolon.itaxi.dto.requests.PaymentRequest;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
 import com.semicolon.itaxi.dto.response.*;
+import com.semicolon.itaxi.exceptions.NoDriverFoundException;
 
 public interface UserService {
     RegisterUserResponse register(RegisterUserRequest request);
     LoginUserResponse login(LoginUserRequest request);
-    BookTripResponse bookARide(BookTripRequest request);
+    BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException;
     PaymentResponse makePayment(PaymentRequest paymentRequest);
     UserResponse feedback(String message);
 }

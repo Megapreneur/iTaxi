@@ -22,7 +22,7 @@ public class Vehicle {
     private String model;
     private String vehicleNumber;
     private String color;
-    private String nameOfDriver;
+//    private String nameOfDriver;
 
 
 

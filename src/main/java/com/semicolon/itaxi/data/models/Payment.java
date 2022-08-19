@@ -1,6 +1,7 @@
 package com.semicolon.itaxi.data.models;
 
 import com.semicolon.itaxi.data.models.enums.PaymentType;
+import com.semicolon.itaxi.services.UserService;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 

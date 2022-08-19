@@ -16,6 +16,6 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(userRepository);
+//        userService = new UserServiceImpl(userRepository);
     }
 }
