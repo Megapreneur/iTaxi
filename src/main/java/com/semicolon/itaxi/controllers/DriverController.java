@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @RequestMapping("/api/v1/drivers")
 public class DriverController {
-    private DriverService driverService;
+    private final DriverService driverService;
 
     public DriverController(DriverService driverService){
         this.driverService = driverService;
