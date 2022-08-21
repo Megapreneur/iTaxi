@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/drivers")
+@RequestMapping("/api/v1/iTaxi/drivers")
 public class DriverController {
     private final DriverService driverService;
 

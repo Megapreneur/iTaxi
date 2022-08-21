@@ -5,6 +5,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class BookTripRequest {
     private String pickUpAddress;
     private String dropOffAddress;

@@ -17,12 +17,12 @@ import javax.validation.constraints.NotNull;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/iTaxi/users")
 public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("/register")
-    public RegisterUserResponse register(@RequestBody RegisterUserRequest request){
+    public RegisterUserResponse register(@RequestBody @Valid @NotNull RegisterUserRequest request){
         return userService.register(request);
     }
     @PostMapping("/login")
