@@ -46,8 +46,5 @@ public class User {
     private String dropOffAddress;
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
-    @ManyToOne
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
     private LocalDateTime dateOfRide = LocalDateTime.now();
 }

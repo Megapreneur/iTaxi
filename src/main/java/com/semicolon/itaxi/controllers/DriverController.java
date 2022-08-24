@@ -37,7 +37,7 @@ public class DriverController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
     @PatchMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid @NotNull LoginDriverRequest request) throws InvalidDriverException {
+    public ResponseEntity<?> login(@RequestBody LoginDriverRequest request) throws InvalidDriverException {
         DriverDto driverDto = driverService.login(request);
         ApiResponse apiResponse = ApiResponse.builder()
                 .status("Success")

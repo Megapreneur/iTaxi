@@ -70,6 +70,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public PaymentResponse makePayment(PaymentRequest paymentRequest) {
+        Optional<User> savedUser = userRepository.findByEmail(paymentRequest.getEmail());
+        if (savedUser.isPresent()){
+
+
+        }
+
+
+
         return null;
     }
 

@@ -21,21 +21,18 @@ import java.time.LocalDate;
 public class DriverDto{
 
     private String message;
-//    private Integer id;
     private String name;
     private String phoneNumber;
     private String model;
     private String vehicleNumber;
     private String color;
-//    private String email;
-//    @JsonDeserialize(using = LocalDateDeserializer.class)
-//    @JsonSerialize(using = LocalDateSerializer.class)
-//    @JsonFormat(shape = JsonFormat.Shape.SCALAR, pattern = "dd-MM-yyyy")
-//    private LocalDate dob;
-//    @JsonDeserialize(using = LocalDateDeserializer.class)
-//    @JsonSerialize(using = LocalDateSerializer.class)
-//    @JsonFormat(shape = JsonFormat.Shape.SCALAR, pattern = "dd-MM-yyyy")
-//    private LocalDate dateJoined;
 
-
+    @Override
+    public String toString() {
+        return " name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", model='" + model + '\'' +
+                ", vehicleNumber='" + vehicleNumber + '\'' +
+                ", color='" + color + '\'';
+    }
 }

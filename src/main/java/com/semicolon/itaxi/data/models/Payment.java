@@ -5,10 +5,7 @@ import com.semicolon.itaxi.services.UserService;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
 @Getter
@@ -22,5 +19,8 @@ public class Payment {
     private String id;
     @Enumerated(value = EnumType.STRING)
     private PaymentType paymentType;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     private Long amount;
 }

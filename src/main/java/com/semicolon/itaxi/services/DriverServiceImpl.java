@@ -9,9 +9,12 @@ import com.semicolon.itaxi.dto.response.DriverDto;
 import com.semicolon.itaxi.exceptions.InvalidDriverException;
 import com.semicolon.itaxi.exceptions.NoDriverFoundException;
 import com.semicolon.itaxi.exceptions.UserExistException;
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -43,25 +46,43 @@ public class DriverServiceImpl implements DriverService{
 
     @Override
     public DriverDto getDriver(String location) throws NoDriverFoundException {
-        Optional<Driver> driver = Optional.ofNullable(driverRepository.findByLocation(location));
+        Optional<Driver> driver = driverRepository.findByLocation(location);
         if (driver.isPresent()) {
-            DriverDto driverDto = new DriverDto();
-            Mapper.map(driver, driverDto);
-            return driverDto;
+            return DriverDto.builder()
+                    .name(driver.get().getName())
+                    .model(driver.get().getCarType())
+                    .color(driver.get().getCarColour())
+                    .phoneNumber(driver.get().getPhoneNumber())
+                    .vehicleNumber(driver.get().getCarNumber())
+                    .build();
         }
         throw new NoDriverFoundException("No driver available at your location");
     }
 
     @Override
+    @Transactional
     public DriverDto login(LoginDriverRequest request) throws InvalidDriverException {
         Optional<Driver> driver = driverRepository.findByEmail(request.getEmail());
+
+//        if(driver.get().getLocation() != null && !Objects.equals(driver, request.getLocation())){
+//            driver.get().setLocation(request.getLocation());
+//        }
         if (driver.isPresent()){
-            Driver.builder().location(request.getLocation()).build();
+            driver.get().setName(driver.get().getName());
+            driver.get().setAddress(driver.get().getAddress());
+//            driver.get().setEmail(driver.get().getEmail());
+            driver.get().setPhoneNumber(driver.get().getPhoneNumber());
+            driver.get().setLocation(request.getLocation());
+            driver.get().setCarColour(driver.get().getCarColour());
+            driver.get().setCarNumber(driver.get().getCarNumber());
+            driver.get().setCarType(driver.get().getCarType());
+            driver.get().setGender(driver.get().getGender());
+
+            Driver savedDriver = driverRepository.save(driver.get());
             DriverDto driverDto = new DriverDto();
-            driverDto.setMessage("Looking for nearby orders at " + request.getLocation());
+            driverDto.setMessage("Looking for nearby orders at " + savedDriver.getLocation());
             return driverDto;
         }
-
         throw new InvalidDriverException("Invalid Driver details");
     }
 

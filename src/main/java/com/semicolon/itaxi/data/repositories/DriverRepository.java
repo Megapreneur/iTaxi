@@ -12,7 +12,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     boolean existsByEmail(String email);
 
 
-    Driver findByLocation(String location);
+    Optional<Driver> findByLocation(String location);
 
     Optional<Driver> findByEmail(String email);
 
