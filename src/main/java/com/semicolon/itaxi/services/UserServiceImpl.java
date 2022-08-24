@@ -1,9 +1,6 @@
 package com.semicolon.itaxi.services;
 
-import com.semicolon.itaxi.data.models.Driver;
-import com.semicolon.itaxi.data.models.Payment;
 import com.semicolon.itaxi.data.models.User;
-import com.semicolon.itaxi.data.repositories.DriverRepository;
 import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.BookTripRequest;
 import com.semicolon.itaxi.dto.requests.LoginUserRequest;
@@ -63,7 +60,8 @@ public class UserServiceImpl implements UserService{
             savedUser.get().setPickUpAddress(request.getPickUpAddress());
             savedUser.get().setDropOffAddress(request.getDropOffAddress());
             BookTripResponse response = new BookTripResponse();
-            response.setMessage("You have been connected to " + driverService.getDriver(request.getLocation()) +". Your trip from " + savedUser.get().getPickUpAddress() + " to "
+            response.setMessage("You have been connected to " + driverService.getDriver(request.getLocation())
+                    +". Your trip from " + savedUser.get().getPickUpAddress() + " to "
                     + savedUser.get().getDropOffAddress() + " was ordered at " + response.getDateOfRide());
             return response ;
         }

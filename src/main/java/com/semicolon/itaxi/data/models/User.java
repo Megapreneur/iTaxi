@@ -1,5 +1,6 @@
 package com.semicolon.itaxi.data.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.semicolon.itaxi.data.models.enums.Gender;
 import com.semicolon.itaxi.data.models.enums.PaymentType;
@@ -39,6 +40,7 @@ public class User {
     private String phoneNumber;
     @NonNull
     private String address;
+    @JsonIgnore
     private String password;
     private String pickUpAddress;
     private String dropOffAddress;

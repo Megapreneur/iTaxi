@@ -1,5 +1,6 @@
 package com.semicolon.itaxi.data.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.semicolon.itaxi.data.models.enums.Gender;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
@@ -28,10 +29,12 @@ public class Driver {
     private String carNumber;
     private String carType;
     private String carColour;
+//    @Getter(AccessLevel.PRIVATE)
+    @JsonIgnore
     private String password;
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "vehicle_vehicle_id")
     private Vehicle vehicle;
     private String location;

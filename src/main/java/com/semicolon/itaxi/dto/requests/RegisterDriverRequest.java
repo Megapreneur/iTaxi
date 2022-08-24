@@ -1,5 +1,6 @@
 package com.semicolon.itaxi.dto.requests;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.semicolon.itaxi.data.models.enums.Gender;
 import com.sun.istack.NotNull;
 import lombok.*;
@@ -24,6 +25,8 @@ public class RegisterDriverRequest {
     private String carType;
     private String carColour;
     private Gender gender;
+//    @Getter(AccessLevel.PRIVATE)
+    @JsonIgnore
     private String password;
     private String location;
 

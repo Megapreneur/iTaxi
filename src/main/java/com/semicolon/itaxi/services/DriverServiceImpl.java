@@ -3,8 +3,10 @@ package com.semicolon.itaxi.services;
 import com.semicolon.itaxi.Mapper;
 import com.semicolon.itaxi.data.models.Driver;
 import com.semicolon.itaxi.data.repositories.DriverRepository;
+import com.semicolon.itaxi.dto.requests.LoginDriverRequest;
 import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
 import com.semicolon.itaxi.dto.response.DriverDto;
+import com.semicolon.itaxi.exceptions.InvalidDriverException;
 import com.semicolon.itaxi.exceptions.NoDriverFoundException;
 import com.semicolon.itaxi.exceptions.UserExistException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,19 @@ public class DriverServiceImpl implements DriverService{
             return driverDto;
         }
         throw new NoDriverFoundException("No driver available at your location");
+    }
+
+    @Override
+    public DriverDto login(LoginDriverRequest request) throws InvalidDriverException {
+        Optional<Driver> driver = driverRepository.findByEmail(request.getEmail());
+        if (driver.isPresent()){
+            Driver.builder().location(request.getLocation()).build();
+            DriverDto driverDto = new DriverDto();
+            driverDto.setMessage("Looking for nearby orders at " + request.getLocation());
+            return driverDto;
+        }
+
+        throw new InvalidDriverException("Invalid Driver details");
     }
 
 //    @Override

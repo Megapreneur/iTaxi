@@ -1,9 +1,8 @@
 package com.semicolon.itaxi.dto.requests;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.semicolon.itaxi.data.models.enums.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.validation.constraints.Email;
@@ -18,6 +17,7 @@ public class RegisterUserRequest {
     private String email;
     private String phoneNumber;
     private String address;
+    @JsonIgnore
     private String password;
     private Gender gender;
 }
