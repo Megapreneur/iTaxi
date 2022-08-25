@@ -32,6 +32,8 @@ public class Driver {
 //    @Getter(AccessLevel.PRIVATE)
     @JsonIgnore
     private String password;
+    @JsonIgnore
+    private String confirmPassword;
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
     @OneToOne

@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.math.BigInteger;
 
 @Getter
 @Setter
@@ -15,5 +16,5 @@ public class PaymentRequest {
     private String email;
     @Enumerated(value = EnumType.STRING)
     private PaymentType paymentType;
-    private Long amount;
+    private BigInteger amount;
 }

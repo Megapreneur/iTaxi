@@ -33,10 +33,14 @@ public class UserServiceImpl implements UserService{
 
         User user = new User(request.getName(), request.getEmail(), request.getPhoneNumber(), request.getAddress(),
                 request.getPassword(), request.getGender());
-        User savedUser = userRepository.save(user);
-        RegisterUserResponse response = new RegisterUserResponse();
-        response.setMessage(savedUser.getName() + " your registration is successful");
-        return response;
+        if (request.getPassword().equals(request.getConfirmPassword())){
+            User savedUser = userRepository.save(user);
+            RegisterUserResponse response = new RegisterUserResponse();
+            response.setMessage(savedUser.getName() + " your registration is successful");
+            return response;
+        }else {
+            throw new IncorrectPasswordException("Password does not match");
+        }
     }
 
     @Override
@@ -52,6 +56,7 @@ public class UserServiceImpl implements UserService{
         }
         throw new InvalidUserException("Invalid Email");
     }
+
 
     @Override
     public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException {
@@ -75,14 +80,12 @@ public class UserServiceImpl implements UserService{
 
 
         }
-
-
-
         return null;
     }
 
     @Override
     public UserResponse feedback(String message) {
+
         return null;
     }
 

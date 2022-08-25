@@ -28,6 +28,9 @@ public class RegisterDriverRequest {
 //    @Getter(AccessLevel.PRIVATE)
     @JsonIgnore
     private String password;
+    @JsonIgnore
+    private String confirmPassword;
+
     private String location;
 
 }

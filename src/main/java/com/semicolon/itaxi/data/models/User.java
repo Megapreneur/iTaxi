@@ -42,6 +42,9 @@ public class User {
     private String address;
     @JsonIgnore
     private String password;
+    @JsonIgnore
+    private String confirmPassword;
+
     private String pickUpAddress;
     private String dropOffAddress;
     @Enumerated(value = EnumType.STRING)

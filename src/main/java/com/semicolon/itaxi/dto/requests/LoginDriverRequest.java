@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginDriverRequest {
+    private String password;
     private String email;
     private String location;
 }

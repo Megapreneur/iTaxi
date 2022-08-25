@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 
 
 @Getter
@@ -22,5 +23,5 @@ public class Payment {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private Long amount;
+    private BigInteger amount;
 }
