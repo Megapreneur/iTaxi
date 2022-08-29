@@ -18,15 +18,4 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     Optional<Driver> findByEmail(String email);
 
 
-//    String getName();
-//
-//    String getPhoneNumber();
-//
-//    String getCarNumber();
-//
-//    String getCarType();
-//
-//    String getGender();
-//
-//    String getLocation();
 }

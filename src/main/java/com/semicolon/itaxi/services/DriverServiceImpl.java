@@ -3,6 +3,7 @@ package com.semicolon.itaxi.services;
 import com.semicolon.itaxi.Mapper;
 import com.semicolon.itaxi.data.models.Driver;
 import com.semicolon.itaxi.data.repositories.DriverRepository;
+import com.semicolon.itaxi.dto.requests.BookTripRequest;
 import com.semicolon.itaxi.dto.requests.LoginDriverRequest;
 import com.semicolon.itaxi.dto.requests.PaymentRequest;
 import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
@@ -99,6 +100,7 @@ public class DriverServiceImpl implements DriverService{
 
     @Override
     public BookingResponse bookingDetails() {
+        BookTripRequest request = new BookTripRequest();
         return null;
     }
 

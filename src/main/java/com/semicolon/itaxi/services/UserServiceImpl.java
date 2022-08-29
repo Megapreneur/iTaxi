@@ -57,7 +57,6 @@ public class UserServiceImpl implements UserService{
         throw new InvalidUserException("Invalid Email");
     }
 
-
     @Override
     public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException {
         Optional<User> savedUser = userRepository.findByEmail(request.getEmail());

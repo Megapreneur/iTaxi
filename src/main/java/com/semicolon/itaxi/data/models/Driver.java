@@ -28,6 +28,7 @@ public class Driver {
     private String email;
     @Column(unique = true)
     private String phoneNumber;
+    @Column(unique = true)
     private String carNumber;
     private String carType;
     private String carColour;
