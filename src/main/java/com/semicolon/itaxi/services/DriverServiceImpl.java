@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,16 +53,21 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public List<DriverDto> getDriver(String location) throws NoDriverFoundException {
-        Optional<Driver> driver = driverRepository.findByLocation(location);
-        if (driver.isPresent()) {
-            return DriverDto.builder()
-                    .name(driver.get().getName())
-                    .model(driver.get().getCarType())
-                    .color(driver.get().getCarColour())
-                    .phoneNumber(driver.get().getPhoneNumber())
-                    .vehicleNumber(driver.get().getCarNumber())
-                    .build();
+    public DriverDto getDriver(String location) throws NoDriverFoundException {
+        List<Driver> driver = driverRepository.findByLocation(location);
+        if (!driver.isEmpty()) {
+            if(driver.size() == 1){
+                Driver assignDriver = driver.get(0);
+                DriverDto driverDto = new DriverDto();
+                Mapper.mapper(assignDriver, driverDto);
+                return driverDto;
+            }else {
+                SecureRandom random = new SecureRandom();
+                Driver assignDriver = driver.get(random.nextInt(driver.size()));
+                DriverDto driverDto = new DriverDto();
+                Mapper.mapper(assignDriver, driverDto);
+                return driverDto;
+            }
         }
         throw new NoDriverFoundException("No driver available at your location");
     }

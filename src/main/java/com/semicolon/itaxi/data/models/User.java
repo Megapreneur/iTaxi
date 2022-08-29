@@ -37,6 +37,7 @@ public class User {
     @Column(unique = true)
     private String email;
     @NonNull
+    @Column(unique = true)
     private String phoneNumber;
     @NonNull
     private String address;

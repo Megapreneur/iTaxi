@@ -24,7 +24,9 @@ public class Driver {
     private String address;
     @Valid
     @Email
+    @Column(unique = true)
     private String email;
+    @Column(unique = true)
     private String phoneNumber;
     private String carNumber;
     private String carType;
