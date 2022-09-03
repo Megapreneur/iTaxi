@@ -17,7 +17,7 @@ import java.math.BigInteger;
 @Entity
 public class Payment {
     @Id
-    private String id;
+    private Long id;
     @Enumerated(value = EnumType.STRING)
     private PaymentType paymentType;
     @ManyToOne

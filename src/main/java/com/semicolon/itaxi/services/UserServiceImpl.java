@@ -1,5 +1,6 @@
 package com.semicolon.itaxi.services;
 
+import com.semicolon.itaxi.data.models.Payment;
 import com.semicolon.itaxi.data.models.User;
 import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.BookTripRequest;
@@ -30,7 +31,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail()))throw  new UserExistException("Email Already Exist");
-
         User user = new User(request.getName(), request.getEmail(), request.getPhoneNumber(), request.getAddress(),
                 request.getPassword(), request.getGender());
         if (request.getPassword().equals(request.getConfirmPassword())){
@@ -76,6 +76,7 @@ public class UserServiceImpl implements UserService{
     public PaymentResponse makePayment(PaymentRequest paymentRequest) {
         Optional<User> savedUser = userRepository.findByEmail(paymentRequest.getEmail());
         if (savedUser.isPresent()){
+            Payment payment = new Payment();
 
 
         }
