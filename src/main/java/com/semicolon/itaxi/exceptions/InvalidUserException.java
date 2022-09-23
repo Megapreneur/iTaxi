@@ -1,7 +1,9 @@
 package com.semicolon.itaxi.exceptions;
 
-public class InvalidUserException extends IllegalArgumentException {
-    public InvalidUserException(String message) {
-        super(message);
+import org.springframework.http.HttpStatus;
+
+public class InvalidUserException extends ITaxiException {
+    public InvalidUserException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

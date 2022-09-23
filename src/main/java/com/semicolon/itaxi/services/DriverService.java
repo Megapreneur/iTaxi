@@ -3,18 +3,17 @@ package com.semicolon.itaxi.services;
 import com.semicolon.itaxi.dto.requests.LoginDriverRequest;
 import com.semicolon.itaxi.dto.requests.PaymentRequest;
 import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
-import com.semicolon.itaxi.dto.response.BookingResponse;
-import com.semicolon.itaxi.dto.response.DriverDto;
-import com.semicolon.itaxi.dto.response.PaymentResponse;
-import com.semicolon.itaxi.exceptions.InvalidDriverException;
-import com.semicolon.itaxi.exceptions.NoDriverFoundException;
+import com.semicolon.itaxi.dto.requests.RegisterVehicleRequest;
+import com.semicolon.itaxi.dto.response.*;
+import com.semicolon.itaxi.exceptions.*;
 
 public interface DriverService{
-    DriverDto register(RegisterDriverRequest request);
+    RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException;
 
     DriverDto getDriver(String location) throws NoDriverFoundException;
+    RegisterDriverResponse registerVehicle(RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException;
 
-    DriverDto login(LoginDriverRequest request) throws InvalidDriverException;
+    LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException;
     BookingResponse bookingDetails();
     PaymentResponse payment(PaymentRequest request);
 

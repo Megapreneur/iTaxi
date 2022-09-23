@@ -1,13 +1,15 @@
 package com.semicolon.itaxi.dto.requests;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginUserRequest {
+@Builder
+public class RegisterVehicleRequest {
     private String email;
-    private String password;
+    private String carNumber;
+    private String carModel;
+    private String carColour;
 }

@@ -14,7 +14,7 @@ import java.math.BigInteger;
 @Builder
 public class PaymentRequest {
     private String email;
-    @Enumerated(value = EnumType.STRING)
     private PaymentType paymentType;
     private BigInteger amount;
+    private String userEmail;
 }

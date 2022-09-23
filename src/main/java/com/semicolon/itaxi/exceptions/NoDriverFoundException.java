@@ -1,7 +1,9 @@
 package com.semicolon.itaxi.exceptions;
 
-public class NoDriverFoundException extends Exception {
-    public NoDriverFoundException(String message) {
-        super(message);
+import org.springframework.http.HttpStatus;
+
+public class NoDriverFoundException extends ITaxiException{
+    public NoDriverFoundException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

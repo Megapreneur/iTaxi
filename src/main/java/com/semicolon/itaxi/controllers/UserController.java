@@ -4,7 +4,10 @@ import com.semicolon.itaxi.dto.requests.BookTripRequest;
 import com.semicolon.itaxi.dto.requests.LoginUserRequest;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
 import com.semicolon.itaxi.dto.response.*;
+import com.semicolon.itaxi.exceptions.InvalidUserException;
+import com.semicolon.itaxi.exceptions.MismatchedPasswordException;
 import com.semicolon.itaxi.exceptions.NoDriverFoundException;
+import com.semicolon.itaxi.exceptions.UserExistException;
 import com.semicolon.itaxi.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +25,27 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("/register")
-    public RegisterUserResponse register(@RequestBody @Valid @NotNull RegisterUserRequest request){
-        return userService.register(request);
+    public ResponseEntity<?> register(@RequestBody @Valid @NotNull RegisterUserRequest request) throws MismatchedPasswordException, UserExistException {
+        RegisterUserResponse userDto = userService.register(request);
+        ApiResponse apiResponse = ApiResponse
+                .builder()
+                .status("Success")
+                .message("User created ")
+                .data(userDto)
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+
     }
     @PostMapping("/login")
-    public LoginUserResponse login (@RequestBody LoginUserRequest request){
-        return userService.login(request);
+    public ResponseEntity<?> login (@RequestBody LoginUserRequest request) throws InvalidUserException {
+        LoginUserResponse response = userService.login(request);
+        ApiResponse apiResponse = ApiResponse
+                .builder()
+                .status("Okay")
+                .message("Welcome Back")
+                .data(response)
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @GetMapping("/orderRide")

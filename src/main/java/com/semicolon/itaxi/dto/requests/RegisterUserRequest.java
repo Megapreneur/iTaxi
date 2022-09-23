@@ -17,9 +17,7 @@ public class RegisterUserRequest {
     private String email;
     private String phoneNumber;
     private String address;
-    @JsonIgnore
     private String password;
-    @JsonIgnore
     private String confirmPassword;
     private Gender gender;
 }

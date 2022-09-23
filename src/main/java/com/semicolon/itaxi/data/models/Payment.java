@@ -1,10 +1,7 @@
 package com.semicolon.itaxi.data.models;
 
 import com.semicolon.itaxi.data.models.enums.PaymentType;
-import com.semicolon.itaxi.services.UserService;
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import javax.persistence.*;
 import java.math.BigInteger;
 
@@ -17,11 +14,15 @@ import java.math.BigInteger;
 @Entity
 public class Payment {
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
     @Enumerated(value = EnumType.STRING)
     private PaymentType paymentType;
+    private BigInteger amount;
+    @OneToOne
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private BigInteger amount;
 }

@@ -1,7 +1,9 @@
 package com.semicolon.itaxi.exceptions;
 
-public class IncorrectPasswordException extends IllegalArgumentException {
-    public IncorrectPasswordException(String message) {
-        super(message);
+import org.springframework.http.HttpStatus;
+
+public class IncorrectPasswordException extends ITaxiException {
+    public IncorrectPasswordException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

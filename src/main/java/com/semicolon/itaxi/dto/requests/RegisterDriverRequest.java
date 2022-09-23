@@ -21,16 +21,7 @@ public class RegisterDriverRequest {
     private String email;
     @Column(unique = true)
     private String phoneNumber;
-    private String carNumber;
-    private String carType;
-    private String carColour;
     private Gender gender;
-//    @Getter(AccessLevel.PRIVATE)
-    @JsonIgnore
     private String password;
-    @JsonIgnore
     private String confirmPassword;
-
-    private String location;
-
 }

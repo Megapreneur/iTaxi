@@ -1,6 +1,6 @@
 package com.semicolon.itaxi.data.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.semicolon.itaxi.data.models.enums.DriverStatus;
 import com.semicolon.itaxi.data.models.enums.Gender;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
@@ -9,7 +9,8 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "Drivers")
@@ -17,10 +18,9 @@ import javax.validation.constraints.Email;
 @Builder
 public class Driver {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
     private String name;
-
     private String address;
     @Valid
     @Email
@@ -28,21 +28,13 @@ public class Driver {
     private String email;
     @Column(unique = true)
     private String phoneNumber;
-    @Column(unique = true)
-    private String carNumber;
-    private String carType;
-    private String carColour;
-//    @Getter(AccessLevel.PRIVATE)
-    @JsonIgnore
+    private String location;
     private String password;
-    @JsonIgnore
     private String confirmPassword;
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
-    @OneToOne
-    @JoinColumn(name = "vehicle_vehicle_id")
-    private Vehicle vehicle;
-    private String location;
+    @Enumerated(value = EnumType.STRING)
+    private DriverStatus driverStatus;
 
 
 }

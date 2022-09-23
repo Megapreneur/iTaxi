@@ -2,9 +2,12 @@ package com.semicolon.itaxi.controllers;
 
 import com.semicolon.itaxi.dto.requests.LoginDriverRequest;
 import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
+import com.semicolon.itaxi.dto.requests.RegisterVehicleRequest;
 import com.semicolon.itaxi.dto.response.ApiResponse;
 import com.semicolon.itaxi.dto.response.DriverDto;
-import com.semicolon.itaxi.exceptions.InvalidDriverException;
+import com.semicolon.itaxi.dto.response.LoginDriverResponse;
+import com.semicolon.itaxi.dto.response.RegisterDriverResponse;
+import com.semicolon.itaxi.exceptions.*;
 import com.semicolon.itaxi.services.DriverService;
 import com.sun.istack.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +28,11 @@ public class DriverController {
         this.driverService = driverService;
     }
     @PostMapping("/register")
-    public ResponseEntity<?>createDriver(@RequestBody @Valid @NotNull RegisterDriverRequest registerDriverRequest) {
+    public ResponseEntity<?>createDriver(@RequestBody @Valid @NotNull RegisterDriverRequest registerDriverRequest) throws MismatchedPasswordException, UserExistException {
         log.info("Account Creation Request ==> {}", registerDriverRequest);
-        DriverDto driverDto = driverService.register(registerDriverRequest);
-        ApiResponse apiResponse = ApiResponse.builder()
+        RegisterDriverResponse driverDto = driverService.register(registerDriverRequest);
+        ApiResponse apiResponse = ApiResponse
+                .builder()
                 .status("success")
                 .message("Driver created successfully")
                 .data(driverDto)
@@ -36,14 +40,26 @@ public class DriverController {
         log.info("Returning response");
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
-    @PatchMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDriverRequest request) throws InvalidDriverException {
-        DriverDto driverDto = driverService.login(request);
-        ApiResponse apiResponse = ApiResponse.builder()
+    @PutMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException {
+        LoginDriverResponse driverDto = driverService.login(request);
+        ApiResponse apiResponse = ApiResponse
+                .builder()
                 .status("Success")
-                .message("Welcome Back " + driverDto.getName())
+                .message("Welcome Back " + driverDto)
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
+    }
 
+    @PostMapping("/registerYourCar")
+    public ResponseEntity<?> registerVehicle(@RequestBody RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException {
+        RegisterDriverResponse driverDto = driverService.registerVehicle(request);
+        ApiResponse apiResponse = ApiResponse
+                .builder()
+                .status("Okay")
+                .message("Successful Registration")
+                .data(driverDto)
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
 }

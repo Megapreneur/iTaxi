@@ -1,34 +1,30 @@
 package com.semicolon.itaxi.data.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TripHistory {
+@Builder
+@Entity
+public class Trip {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
     private String pickUpAddress;
     private String dropOffAddress;
+    private String location;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
     @JoinColumn(name = "driver_id")
-    private Driver driverDetails;
-    @ManyToOne
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Driver driver;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime time = LocalDateTime.now();
 
 }

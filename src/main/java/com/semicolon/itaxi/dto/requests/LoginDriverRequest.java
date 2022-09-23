@@ -1,5 +1,6 @@
 package com.semicolon.itaxi.dto.requests;
 
+import com.semicolon.itaxi.data.models.enums.DriverStatus;
 import lombok.*;
 
 @Builder
@@ -11,4 +12,5 @@ public class LoginDriverRequest {
     private String password;
     private String email;
     private String location;
+    private DriverStatus driverStatus;
 }
