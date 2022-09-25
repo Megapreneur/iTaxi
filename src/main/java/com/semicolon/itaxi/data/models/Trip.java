@@ -25,6 +25,6 @@ public class Trip {
     @JoinColumn(name = "driver_id")
     private Driver driver;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime time = LocalDateTime.now();
+    private LocalDateTime time;
 
 }

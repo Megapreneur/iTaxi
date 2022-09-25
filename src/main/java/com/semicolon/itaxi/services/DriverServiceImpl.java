@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,28 +57,27 @@ public class DriverServiceImpl implements DriverService{
     @Override
     public DriverDto getDriver(String location) throws NoDriverFoundException {
         List<Driver> drivers = driverRepository.findByLocation(location);
-        List<Driver> availableDriver;
-        for (int i = 0; i < drivers.size(); i++) {
-            if(drivers.get(i).getDriverStatus().equals(DriverStatus.AVAILABLE)){
-                availableDriver = drivers.add(drivers.get(i));
-                if (!availableDriver.isEmpty()){
-                    SecureRandom random = new SecureRandom();
-                    Driver assignDriver = drivers.get(random.nextInt(drivers.size()));
-                    Optional<Vehicle> savedVehicle1 = vehicleRepository.findByDriverId(assignDriver.getId());
-                    if (savedVehicle1.isPresent()){
-                        return DriverDto
-                                .builder()
-                                .message("")
-                                .name(assignDriver.getName())
-                                .phoneNumber(assignDriver.getPhoneNumber())
-                                .vehicleNumber(savedVehicle1.get().getCarNumber())
-                                .color(savedVehicle1.get().getCarColour())
-                                .model(savedVehicle1.get().getCarModel())
-                                .build();
-                    }
-                }
+        List<Driver> availableDriver = new ArrayList<>();
+        for (Driver driver: drivers) {
+            if (driver.getDriverStatus().equals(DriverStatus.AVAILABLE)){
+                availableDriver.add(driver);
             }
-            throw new NoDriverFoundException("No driver available at your location", HttpStatus.NOT_FOUND);
+        }
+        if (!availableDriver.isEmpty()){
+            SecureRandom random = new SecureRandom();
+            Driver assignDriver = drivers.get(random.nextInt(drivers.size()));
+            Optional<Vehicle> savedVehicle = vehicleRepository.findByDriverId(assignDriver.getId());
+            if (savedVehicle.isPresent()){
+                return DriverDto
+                        .builder()
+                        .message("You have been connected to a driver")
+                        .name(assignDriver.getName())
+                        .phoneNumber(assignDriver.getPhoneNumber())
+                        .vehicleNumber(savedVehicle.get().getCarNumber())
+                        .color(savedVehicle.get().getCarColour())
+                        .model(savedVehicle.get().getCarModel())
+                        .build();
+            }
         }
         throw new NoDriverFoundException("No driver available at your location", HttpStatus.NOT_FOUND);
     }
@@ -133,42 +133,6 @@ public class DriverServiceImpl implements DriverService{
     public PaymentResponse payment(PaymentRequest request) {
         return null;
     }
-
-
-//    @Override
-//    public DriverDto getDriver(String location) throws NoDriverFoundException {
-//        List<Driver> drivers = driverRepository.findByLocation(location);
-//        List<Driver> availableDriver;
-//        for (int i = 0; i < drivers.size(); i++) {
-//            if (drivers.get(i).getDriverStatus().equals(AVAILABLE)) {
-//                availableDriver = drivers.stream().toList();
-//                if (!availableDriver.isEmpty()) {
-//                    if (availableDriver.size() == 1) {
-//                        Driver assignDriver = drivers.get(0);
-//                        DriverDto driverDto = new DriverDto();
-//                        Mapper.mapper(assignDriver, driverDto);
-//                        return driverDto;
-//                    } else {
-//                        SecureRandom random = new SecureRandom();
-//                        Driver assignDriver = drivers.get(random.nextInt(drivers.size()));
-//                        DriverDto driverDto = new DriverDto();
-//                        Mapper.mapper(assignDriver, driverDto);
-//                        return driverDto;
-//                    }
-//                }
-//                throw new NoDriverFoundException("No driver available at your location");
-//            }
-//        }
-//        throw new NoDriverFoundException("No driver available at your location");
-//    }
-//
-//
-//    @Override
-//    public BookingResponse bookingDetails() {
-//        BookTripRequest request = new BookTripRequest();
-//
-//        return null;
-//    }
 //
 //    @Override
 //    public PaymentResponse payment(PaymentRequest request) {

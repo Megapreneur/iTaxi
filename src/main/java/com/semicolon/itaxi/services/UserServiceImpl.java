@@ -1,6 +1,8 @@
 package com.semicolon.itaxi.services;
 
+import com.semicolon.itaxi.data.models.Driver;
 import com.semicolon.itaxi.data.models.Payment;
+import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.data.models.User;
 import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.BookTripRequest;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -64,6 +67,19 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException {
+        Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
+        if (savedUser.isPresent()){
+            DriverDto assignedDriver = driverService.getDriver(request.getLocation());
+            Trip trip = Trip
+                    .builder()
+                    .dropOffAddress(request.getDropOffAddress())
+                    .driver(assignedDriver.)
+                    .time(request.getTimeOfRide())
+                    .pickUpAddress(request.getPickUpAddress())
+                    .user(savedUser.get())
+                    .location(request.getLocation())
+                    .build();
+        }
 
         return null;
     }
@@ -77,8 +93,6 @@ public class UserServiceImpl implements UserService{
     public UserResponse feedback(String message) {
         return null;
     }
-
-
 
 //    @Override
 //    public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException {
