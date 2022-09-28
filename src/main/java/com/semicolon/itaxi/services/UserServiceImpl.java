@@ -1,14 +1,10 @@
 package com.semicolon.itaxi.services;
 
-import com.semicolon.itaxi.data.models.Driver;
-import com.semicolon.itaxi.data.models.Payment;
-import com.semicolon.itaxi.data.models.Trip;
-import com.semicolon.itaxi.data.models.User;
+import com.semicolon.itaxi.data.models.*;
+import com.semicolon.itaxi.data.repositories.TripRepository;
 import com.semicolon.itaxi.data.repositories.UserRepository;
-import com.semicolon.itaxi.dto.requests.BookTripRequest;
-import com.semicolon.itaxi.dto.requests.LoginUserRequest;
-import com.semicolon.itaxi.dto.requests.PaymentRequest;
-import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
+import com.semicolon.itaxi.data.repositories.VehicleRepository;
+import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
 import lombok.AllArgsConstructor;
@@ -17,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +21,9 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final VehicleRepository vehicleRepository;
+
+    private final TripRepository tripRepository;
     @Autowired
     private DriverService driverService;
 
@@ -66,22 +66,47 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException {
+    public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException, UserExistException {
         Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
         if (savedUser.isPresent()){
-            DriverDto assignedDriver = driverService.getDriver(request.getLocation());
+            Driver assignedDriver = driverService.getDriver(request.getLocation());
             Trip trip = Trip
                     .builder()
                     .dropOffAddress(request.getDropOffAddress())
-                    .driver(assignedDriver.)
-                    .time(request.getTimeOfRide())
+                    .driver(assignedDriver)
+                    .time(LocalDateTime.now())
                     .pickUpAddress(request.getPickUpAddress())
                     .user(savedUser.get())
                     .location(request.getLocation())
                     .build();
+            Trip saved = tripRepository.save(trip);
+            return getBookTripResponse(assignedDriver, saved);
         }
 
+        throw new UserExistException("User does not exist", HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    public List<Trip> getHistoryOfAllTrips(TripHistoryRequest request) {
+        Optional<User> savedUser = userRepository.findByEmail(request)
         return null;
+    }
+
+    private BookTripResponse getBookTripResponse(Driver assignedDriver, Trip saved) throws UserExistException {
+        Optional<Vehicle> vehicle = vehicleRepository.findVehicleByDriver(assignedDriver);
+        if(vehicle.isPresent()){
+
+            return BookTripResponse.builder()
+                    .message("Your trip has been booked successfully")
+                    .name(saved.getDriver().getName())
+                    .phoneNumber(saved.getDriver().getPhoneNumber())
+                    .model(vehicle.get().getCarModel())
+                    .color(vehicle.get().getCarColour())
+                    .vehicleNumber(vehicle.get().getCarNumber())
+                    .dateOfRide(saved.getTime())
+                    .build();
+        }
+        throw new UserExistException("Vehicle is faulty", HttpStatus.NOT_FOUND);
     }
 
     @Override

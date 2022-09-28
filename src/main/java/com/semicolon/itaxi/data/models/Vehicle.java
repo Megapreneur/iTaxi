@@ -20,7 +20,7 @@ public class Vehicle {
     private String carNumber;
     private String carModel;
     private String carColour;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id")
     private Driver driver;
 

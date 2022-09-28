@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping("/orderRide")
-    public ResponseEntity<?> bookARide (@RequestBody @Valid @NotNull BookTripRequest request) throws NoDriverFoundException {
+    public ResponseEntity<?> bookARide (@RequestBody @Valid @NotNull BookTripRequest request) throws NoDriverFoundException, UserExistException {
         log.info("Order a ride request ===> {}", request);
         BookTripResponse driverDto = userService.bookARide(request);
         ApiResponse apiResponse = ApiResponse.builder()

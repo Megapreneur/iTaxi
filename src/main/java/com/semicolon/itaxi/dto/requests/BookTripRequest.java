@@ -14,7 +14,6 @@ public class BookTripRequest {
     private String dropOffAddress;
     private String email;
     private String location;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime timeOfRide = LocalDateTime.now();
+
 
 }

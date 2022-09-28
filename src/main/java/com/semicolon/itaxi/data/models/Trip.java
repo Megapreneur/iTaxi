@@ -1,8 +1,7 @@
 package com.semicolon.itaxi.data.models;
-
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 @Getter
@@ -23,6 +22,7 @@ public class Trip {
     private User user;
     @ManyToOne
     @JoinColumn(name = "driver_id")
+    @Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     private Driver driver;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime time;
