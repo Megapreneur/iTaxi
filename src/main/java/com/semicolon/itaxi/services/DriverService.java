@@ -1,12 +1,12 @@
 package com.semicolon.itaxi.services;
 
 import com.semicolon.itaxi.data.models.Driver;
-import com.semicolon.itaxi.dto.requests.LoginDriverRequest;
-import com.semicolon.itaxi.dto.requests.PaymentRequest;
-import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
-import com.semicolon.itaxi.dto.requests.RegisterVehicleRequest;
+import com.semicolon.itaxi.data.models.Trip;
+import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
+
+import java.util.List;
 
 public interface DriverService{
     RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException;
@@ -15,6 +15,7 @@ public interface DriverService{
     RegisterDriverResponse registerVehicle(RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException;
 
     LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException;
+    List<Trip> getHistoryOfAllTrips(TripHistoryRequest request) throws NoTripHistoryForUserException;
     BookingResponse bookingDetails();
     PaymentResponse payment(PaymentRequest request);
 

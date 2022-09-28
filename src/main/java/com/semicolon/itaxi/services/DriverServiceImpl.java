@@ -2,14 +2,13 @@ package com.semicolon.itaxi.services;
 
 
 import com.semicolon.itaxi.data.models.Driver;
+import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.data.models.Vehicle;
 import com.semicolon.itaxi.data.models.enums.DriverStatus;
 import com.semicolon.itaxi.data.repositories.DriverRepository;
+import com.semicolon.itaxi.data.repositories.TripRepository;
 import com.semicolon.itaxi.data.repositories.VehicleRepository;
-import com.semicolon.itaxi.dto.requests.LoginDriverRequest;
-import com.semicolon.itaxi.dto.requests.PaymentRequest;
-import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
-import com.semicolon.itaxi.dto.requests.RegisterVehicleRequest;
+import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,9 @@ public class DriverServiceImpl implements DriverService{
     private DriverRepository driverRepository;
     @Autowired
     private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private TripRepository tripRepository;
 
 
     @Override
@@ -110,6 +112,15 @@ public class DriverServiceImpl implements DriverService{
             throw new IncorrectPasswordException("Incorrect Password", HttpStatus.NOT_ACCEPTABLE);
         }
             throw new InvalidDriverException("Invalid Driver details", HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @Override
+    public List<Trip> getHistoryOfAllTrips(TripHistoryRequest request) throws NoTripHistoryForUserException {
+        Optional<Driver> savedDriver = driverRepository.findByEmail(request.getEmail());
+        if (savedDriver.isPresent()){
+            return tripRepository.findByDriverId(savedDriver.get().getId());
+        }
+        throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
     }
 
     @Override
