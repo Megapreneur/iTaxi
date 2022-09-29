@@ -142,20 +142,5 @@ public class UserServiceImpl implements UserService{
     public UserResponse feedback(String message) {
         return null;
     }
-//
-//    @Override
-//    public PaymentResponse makePayment(PaymentRequest paymentRequest) {
-//        Optional<User> savedUser = userRepository.findByEmail(paymentRequest.getEmail());
-//        if (savedUser.isPresent()){
-//            Payment payment = new Payment();
-//            payment.setUserEmail(payment.getUserEmail());
-//            payment.setPaymentType(paymentRequest.getPaymentType());
-//            payment.setAmount(paymentRequest.getAmount());
-//
-//
-//        }
-//        return null;
-//    }
-
 
 }
