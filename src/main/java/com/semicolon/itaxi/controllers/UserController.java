@@ -1,10 +1,7 @@
 package com.semicolon.itaxi.controllers;
 
 import com.semicolon.itaxi.data.models.Trip;
-import com.semicolon.itaxi.dto.requests.BookTripRequest;
-import com.semicolon.itaxi.dto.requests.LoginUserRequest;
-import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
-import com.semicolon.itaxi.dto.requests.TripHistoryRequest;
+import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
 import com.semicolon.itaxi.services.UserService;
@@ -62,5 +59,10 @@ public class UserController {
     @GetMapping("/userTripHistory/{email}")
     public List<Trip> getHistoryOfAllTrips(@PathVariable String email)throws NoTripHistoryForUserException{
         return userService.getHistoryOfAllTrips(email);
+    }
+
+    @PostMapping("/payment")
+    public PaymentResponse makePayment(@RequestBody PaymentRequest request) throws NoTripHistoryForUserException {
+        return userService.makePayment(request);
     }
 }
