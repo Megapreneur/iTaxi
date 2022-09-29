@@ -59,8 +59,8 @@ public class UserController {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
-    @GetMapping("/userTripHistory")
-    public List<Trip> getHistoryOfAllTrips(@RequestBody TripHistoryRequest request)throws NoTripHistoryForUserException{
-        return userService.getHistoryOfAllTrips(request);
+    @GetMapping("/userTripHistory/{email}")
+    public List<Trip> getHistoryOfAllTrips(@PathVariable String email)throws NoTripHistoryForUserException{
+        return userService.getHistoryOfAllTrips(email);
     }
 }

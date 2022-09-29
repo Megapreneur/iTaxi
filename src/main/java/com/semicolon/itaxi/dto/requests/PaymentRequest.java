@@ -16,5 +16,4 @@ public class PaymentRequest {
     private String email;
     private PaymentType paymentType;
     private BigInteger amount;
-    private String userEmail;
 }

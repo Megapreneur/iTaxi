@@ -1,6 +1,7 @@
 package com.semicolon.itaxi.services;
 
 import com.semicolon.itaxi.data.models.*;
+import com.semicolon.itaxi.data.repositories.PaymentRepository;
 import com.semicolon.itaxi.data.repositories.TripRepository;
 import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.data.repositories.VehicleRepository;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService{
     private final VehicleRepository vehicleRepository;
 
     private final TripRepository tripRepository;
+    private final PaymentRepository paymentRepository;
     @Autowired
     private DriverService driverService;
 
@@ -87,8 +89,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<Trip> getHistoryOfAllTrips(TripHistoryRequest request) throws NoTripHistoryForUserException {
-        Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
+    public List<Trip> getHistoryOfAllTrips(String email) throws NoTripHistoryForUserException {
+        Optional<User> savedUser = userRepository.findByEmail(email);
         if (savedUser.isPresent()){
             List<Trip> userTripHistory = tripRepository.findTripsByUser(savedUser.get());
             if (!userTripHistory.isEmpty()){
@@ -114,9 +116,25 @@ public class UserServiceImpl implements UserService{
         }
         throw new UserExistException("Vehicle is faulty", HttpStatus.NOT_FOUND);
     }
-
     @Override
-    public PaymentResponse makePayment(PaymentRequest paymentRequest) {
+    public PaymentResponse makePayment(PaymentRequest paymentRequest) throws NoTripHistoryForUserException {
+        List<Trip> trips = getHistoryOfAllTrips(paymentRequest.getEmail());
+        if (!trips.isEmpty()){
+            Trip trip = trips.get(trips.size() - 1);
+            Payment payment = Payment
+                    .builder()
+                    .paymentType(paymentRequest.getPaymentType())
+                    .user(trip.getUser())
+                    .amount(paymentRequest.getAmount())
+                    .trip(trip)
+                    .build();
+            Payment savedPayment = paymentRepository.save(payment);
+            return PaymentResponse
+                    .builder()
+                    .message("Your payment of ₦" + savedPayment.getAmount() + " for the trip from " +
+                            trip.getPickUpAddress() + " to " + trip.getDropOffAddress() + " was successful!")
+                    .build();
+        }
         return null;
     }
 
@@ -124,21 +142,6 @@ public class UserServiceImpl implements UserService{
     public UserResponse feedback(String message) {
         return null;
     }
-
-//    @Override
-//    public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException {
-//        Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
-//        if (savedUser.isPresent()){
-//            savedUser.get().setPickUpAddress(request.getPickUpAddress());
-//            savedUser.get().setDropOffAddress(request.getDropOffAddress());
-//            BookTripResponse response = new BookTripResponse();
-//            response.setMessage("You have been connected to " + driverService.getDriver(request.getLocation())
-//                    +". Your trip from " + savedUser.get().getPickUpAddress() + " to "
-//                    + savedUser.get().getDropOffAddress() + " was ordered at " + response.getDateOfRide());
-//            return response ;
-//        }
-//        throw new InvalidUserException("Invalid Email") ;
-//    }
 //
 //    @Override
 //    public PaymentResponse makePayment(PaymentRequest paymentRequest) {
@@ -153,11 +156,6 @@ public class UserServiceImpl implements UserService{
 //        }
 //        return null;
 //    }
-//
-//    @Override
-//    public UserResponse feedback(String message) {
-//
-//        return null;
-//    }
+
 
 }

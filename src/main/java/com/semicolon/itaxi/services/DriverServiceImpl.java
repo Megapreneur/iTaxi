@@ -115,8 +115,8 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public List<Trip> getHistoryOfAllTrips(TripHistoryRequest request) throws NoTripHistoryForUserException {
-        Optional<Driver> savedDriver = driverRepository.findByEmail(request.getEmail());
+    public List<Trip> getHistoryOfAllTrips(String email) throws NoTripHistoryForUserException {
+        Optional<Driver> savedDriver = driverRepository.findByEmail(email);
         if (savedDriver.isPresent()){
             List<Trip> tripHistory = tripRepository.findTripsByDriver(savedDriver.get());
             if (!tripHistory.isEmpty()){

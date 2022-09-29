@@ -67,8 +67,8 @@ public class DriverController {
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/trips")
-    public List<Trip> getHistoryOfAllTrips(@RequestBody TripHistoryRequest request) throws NoTripHistoryForUserException{
-        return driverService.getHistoryOfAllTrips(request);
+    @GetMapping("/trips/{email}")
+    public List<Trip> getHistoryOfAllTrips(@PathVariable String email) throws NoTripHistoryForUserException{
+        return driverService.getHistoryOfAllTrips(email);
     }
 }

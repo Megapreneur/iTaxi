@@ -11,7 +11,7 @@ public interface UserService {
     RegisterUserResponse register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException;
     LoginUserResponse login(LoginUserRequest request) throws InvalidUserException;
     BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException, UserExistException;
-    List<Trip>getHistoryOfAllTrips(TripHistoryRequest request) throws NoTripHistoryForUserException;
-    PaymentResponse makePayment(PaymentRequest paymentRequest);
+    List<Trip>getHistoryOfAllTrips(String email) throws NoTripHistoryForUserException;
+    PaymentResponse makePayment(PaymentRequest paymentRequest) throws NoTripHistoryForUserException;
     UserResponse feedback(String message);
 }
