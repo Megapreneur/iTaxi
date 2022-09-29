@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Trip {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String pickUpAddress;
     private String dropOffAddress;
@@ -22,7 +22,7 @@ public class Trip {
     private User user;
     @ManyToOne
     @JoinColumn(name = "driver_id")
-    @Cascade(org.hibernate.annotations.CascadeType.PERSIST)
+//    @Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     private Driver driver;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime time;

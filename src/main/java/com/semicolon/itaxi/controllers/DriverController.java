@@ -1,8 +1,10 @@
 package com.semicolon.itaxi.controllers;
 
+import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.dto.requests.LoginDriverRequest;
 import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
 import com.semicolon.itaxi.dto.requests.RegisterVehicleRequest;
+import com.semicolon.itaxi.dto.requests.TripHistoryRequest;
 import com.semicolon.itaxi.dto.response.ApiResponse;
 import com.semicolon.itaxi.dto.response.DriverDto;
 import com.semicolon.itaxi.dto.response.LoginDriverResponse;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -62,5 +65,10 @@ public class DriverController {
                 .data(driverDto)
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/trips")
+    public List<Trip> getHistoryOfAllTrips(@RequestBody TripHistoryRequest request) throws NoTripHistoryForUserException{
+        return driverService.getHistoryOfAllTrips(request);
     }
 }

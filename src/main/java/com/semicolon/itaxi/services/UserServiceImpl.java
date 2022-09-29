@@ -90,7 +90,10 @@ public class UserServiceImpl implements UserService{
     public List<Trip> getHistoryOfAllTrips(TripHistoryRequest request) throws NoTripHistoryForUserException {
         Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
         if (savedUser.isPresent()){
-            return tripRepository.findByUserId(savedUser.get().getId());
+            List<Trip> userTripHistory = tripRepository.findTripsByUser(savedUser.get());
+            if (!userTripHistory.isEmpty()){
+                return userTripHistory;
+            }
         }
         throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
     }

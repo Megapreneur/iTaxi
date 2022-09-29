@@ -1,13 +1,12 @@
 package com.semicolon.itaxi.controllers;
 
+import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.dto.requests.BookTripRequest;
 import com.semicolon.itaxi.dto.requests.LoginUserRequest;
 import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
+import com.semicolon.itaxi.dto.requests.TripHistoryRequest;
 import com.semicolon.itaxi.dto.response.*;
-import com.semicolon.itaxi.exceptions.InvalidUserException;
-import com.semicolon.itaxi.exceptions.MismatchedPasswordException;
-import com.semicolon.itaxi.exceptions.NoDriverFoundException;
-import com.semicolon.itaxi.exceptions.UserExistException;
+import com.semicolon.itaxi.exceptions.*;
 import com.semicolon.itaxi.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -58,6 +58,9 @@ public class UserController {
                 .data(driverDto)
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
-
+    }
+    @GetMapping("/userTripHistory")
+    public List<Trip> getHistoryOfAllTrips(@RequestBody TripHistoryRequest request)throws NoTripHistoryForUserException{
+        return userService.getHistoryOfAllTrips(request);
     }
 }

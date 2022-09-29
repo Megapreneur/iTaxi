@@ -118,9 +118,13 @@ public class DriverServiceImpl implements DriverService{
     public List<Trip> getHistoryOfAllTrips(TripHistoryRequest request) throws NoTripHistoryForUserException {
         Optional<Driver> savedDriver = driverRepository.findByEmail(request.getEmail());
         if (savedDriver.isPresent()){
-            return tripRepository.findByDriverId(savedDriver.get().getId());
+            List<Trip> tripHistory = tripRepository.findTripsByDriver(savedDriver.get());
+            if (!tripHistory.isEmpty()){
+                return tripHistory;
+            }
+            throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
         }
-        throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
+        throw new NoTripHistoryForUserException("Invalid login details", HttpStatus.NOT_FOUND);
     }
 
     @Override

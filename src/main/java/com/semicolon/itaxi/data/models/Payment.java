@@ -14,7 +14,7 @@ import java.math.BigInteger;
 @Entity
 public class Payment {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Enumerated(value = EnumType.STRING)
     private PaymentType paymentType;
