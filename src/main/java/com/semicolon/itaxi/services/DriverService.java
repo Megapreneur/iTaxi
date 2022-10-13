@@ -12,7 +12,7 @@ public interface DriverService{
     RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException;
 
     Driver getDriver(String location) throws NoDriverFoundException;
-    RegisterDriverResponse registerVehicle(RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException;
+    RegisterVehicleResponse registerVehicle(RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException;
 
     LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException;
     List<Trip> getHistoryOfAllTrips(String email) throws NoTripHistoryForUserException;

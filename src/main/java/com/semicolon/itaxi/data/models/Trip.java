@@ -26,5 +26,4 @@ public class Trip {
     private Driver driver;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime time;
-
 }

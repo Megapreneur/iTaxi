@@ -15,7 +15,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
 
     List<Driver> findByLocation(String location);
-    List<Driver> findByDriverStatus(DriverStatus driverStatus);
+//    List<Driver> findByDriverStatus(DriverStatus driverStatus);
 
     Optional<Driver> findByEmail(String email);
 

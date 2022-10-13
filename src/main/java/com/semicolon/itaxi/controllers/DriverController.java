@@ -4,11 +4,10 @@ import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.dto.requests.LoginDriverRequest;
 import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
 import com.semicolon.itaxi.dto.requests.RegisterVehicleRequest;
-import com.semicolon.itaxi.dto.requests.TripHistoryRequest;
 import com.semicolon.itaxi.dto.response.ApiResponse;
-import com.semicolon.itaxi.dto.response.DriverDto;
 import com.semicolon.itaxi.dto.response.LoginDriverResponse;
 import com.semicolon.itaxi.dto.response.RegisterDriverResponse;
+import com.semicolon.itaxi.dto.response.RegisterVehicleResponse;
 import com.semicolon.itaxi.exceptions.*;
 import com.semicolon.itaxi.services.DriverService;
 import com.sun.istack.NotNull;
@@ -57,7 +56,7 @@ public class DriverController {
 
     @PostMapping("/registerYourCar")
     public ResponseEntity<?> registerVehicle(@RequestBody RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException {
-        RegisterDriverResponse driverDto = driverService.registerVehicle(request);
+        RegisterVehicleResponse driverDto = driverService.registerVehicle(request);
         ApiResponse apiResponse = ApiResponse
                 .builder()
                 .status("Okay")

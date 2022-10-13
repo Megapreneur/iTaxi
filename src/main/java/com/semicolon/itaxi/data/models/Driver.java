@@ -30,7 +30,6 @@ public class Driver {
     private String phoneNumber;
     private String location;
     private String password;
-    private String confirmPassword;
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
     @Enumerated(value = EnumType.STRING)

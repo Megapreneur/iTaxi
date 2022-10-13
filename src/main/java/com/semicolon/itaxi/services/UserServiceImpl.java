@@ -1,5 +1,7 @@
 package com.semicolon.itaxi.services;
 
+import com.semicolon.itaxi.config.SecureDriver;
+import com.semicolon.itaxi.config.SecureUser;
 import com.semicolon.itaxi.data.models.*;
 import com.semicolon.itaxi.data.repositories.PaymentRepository;
 import com.semicolon.itaxi.data.repositories.TripRepository;
@@ -8,40 +10,41 @@ import com.semicolon.itaxi.data.repositories.VehicleRepository;
 import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
-import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final VehicleRepository vehicleRepository;
-
-    private final TripRepository tripRepository;
-    private final PaymentRepository paymentRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private VehicleRepository vehicleRepository;
+    @Autowired
+    private TripRepository tripRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
     @Autowired
     private DriverService driverService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException {
         if (userRepository.existsByEmail(request.getEmail()))throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
-        User user = User
-                .builder()
-                .name(request.getName())
-                .address(request.getAddress())
-                .email(request.getEmail())
-                .gender(request.getGender())
-                .phoneNumber(request.getPhoneNumber())
-                .password(request.getPassword())
-                .confirmPassword(request.getConfirmPassword())
-                .build();
+        User user = modelMapper.map(request, User.class);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         if (request.getPassword().equals(request.getConfirmPassword())){
             User savedUser = userRepository.save(user);
             return RegisterUserResponse
@@ -56,7 +59,7 @@ public class UserServiceImpl implements UserService{
     public LoginUserResponse login(LoginUserRequest request) throws InvalidUserException {
         Optional<User> user = userRepository.findByEmail(request.getEmail());
         if (user.isPresent()){
-            if (user.get().getPassword().equals(request.getPassword())){
+            if (passwordEncoder.matches(request.getPassword(), user.get().getPassword())){
                 return LoginUserResponse
                         .builder()
                         .message("Welcome back " + user.get().getName() + ". Where will you like to go today?")
@@ -72,19 +75,10 @@ public class UserServiceImpl implements UserService{
         Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
         if (savedUser.isPresent()){
             Driver assignedDriver = driverService.getDriver(request.getLocation());
-            Trip trip = Trip
-                    .builder()
-                    .dropOffAddress(request.getDropOffAddress())
-                    .driver(assignedDriver)
-                    .time(LocalDateTime.now())
-                    .pickUpAddress(request.getPickUpAddress())
-                    .user(savedUser.get())
-                    .location(request.getLocation())
-                    .build();
+            Trip trip = modelMapper.map(request, Trip.class);
             Trip saved = tripRepository.save(trip);
             return getBookTripResponse(assignedDriver, saved);
         }
-
         throw new UserExistException("User does not exist", HttpStatus.NOT_FOUND);
     }
 
@@ -121,13 +115,7 @@ public class UserServiceImpl implements UserService{
         List<Trip> trips = getHistoryOfAllTrips(paymentRequest.getEmail());
         if (!trips.isEmpty()){
             Trip trip = trips.get(trips.size() - 1);
-            Payment payment = Payment
-                    .builder()
-                    .paymentType(paymentRequest.getPaymentType())
-                    .user(trip.getUser())
-                    .amount(paymentRequest.getAmount())
-                    .trip(trip)
-                    .build();
+            Payment payment = modelMapper.map(paymentRequest, Payment.class);
             Payment savedPayment = paymentRepository.save(payment);
             return PaymentResponse
                     .builder()
@@ -143,4 +131,9 @@ public class UserServiceImpl implements UserService{
         return null;
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new SecureUser(user);
+    }
 }

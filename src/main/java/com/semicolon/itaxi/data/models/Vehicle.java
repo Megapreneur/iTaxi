@@ -23,8 +23,4 @@ public class Vehicle {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id")
     private Driver driver;
-
-
-
-
 }

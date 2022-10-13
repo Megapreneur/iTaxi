@@ -1,6 +1,7 @@
 package com.semicolon.itaxi.services;
 
 
+import com.semicolon.itaxi.config.SecureDriver;
 import com.semicolon.itaxi.data.models.Driver;
 import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.data.models.Vehicle;
@@ -11,8 +12,13 @@ import com.semicolon.itaxi.data.repositories.VehicleRepository;
 import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -22,36 +28,31 @@ import java.util.Optional;
 
 @Service
 
-public class DriverServiceImpl implements DriverService{
+public class DriverServiceImpl implements DriverService, UserDetailsService {
 
     @Autowired
     private DriverRepository driverRepository;
     @Autowired
     private VehicleRepository vehicleRepository;
-
+    @Autowired
+    private ModelMapper modelMapper;
     @Autowired
     private TripRepository tripRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException {
         if (driverRepository.existsByEmail(request.getEmail())) throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
-            Driver driver = Driver
+        Driver driver = modelMapper.map(request, Driver.class);
+        driver.setPassword(passwordEncoder.encode(request.getPassword()));
+        if(request.getPassword().equals(request.getConfirmPassword())) {
+            Driver savedDrive = driverRepository.save(driver);
+            return RegisterDriverResponse
                     .builder()
-                    .name(request.getName())
-                    .email(request.getEmail())
-                    .phoneNumber(request.getPhoneNumber())
-                    .gender(request.getGender())
-                    .address(request.getAddress())
-                    .password(request.getPassword())
-                    .confirmPassword(request.getConfirmPassword())
+                    .message("Hello " + savedDrive.getName() + " , Your registration was successful")
                     .build();
-            if(request.getPassword().equals(request.getConfirmPassword())) {
-                Driver savedDrive = driverRepository.save(driver);
-                return RegisterDriverResponse
-                        .builder()
-                        .message("Hello " + savedDrive.getName() + " , Your registration was successful")
-                        .build();
             }
         throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
     }
@@ -73,20 +74,20 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public RegisterDriverResponse registerVehicle(RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException {
+    public RegisterVehicleResponse registerVehicle(RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException {
         Optional<Driver> driver = driverRepository.findByEmail(request.getEmail());
         if (driver.isPresent()){
             Optional<Vehicle> savedVehicle = vehicleRepository.findByDriverId(driver.get().getId());
             if (savedVehicle.isEmpty()){
                 Vehicle vehicle = Vehicle
                         .builder()
-                        .carNumber(request.getCarNumber())
-                        .carModel(request.getCarModel())
-                        .carColour(request.getCarColour())
                         .driver(driver.get())
+                        .carColour(request.getCarColour())
+                        .carModel(request.getCarModel())
+                        .carNumber(request.getCarNumber())
                         .build();
                 vehicleRepository.save(vehicle);
-                return RegisterDriverResponse
+                return RegisterVehicleResponse
                         .builder()
                         .message(driver.get().getName() + " your car has been registered successfully. Safe trips")
                         .build();
@@ -100,7 +101,7 @@ public class DriverServiceImpl implements DriverService{
     public LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException {
         Optional<Driver> driver = driverRepository.findByEmail(request.getEmail());
         if (driver.isPresent()){
-            if (driver.get().getPassword().equals(request.getPassword())){
+            if (passwordEncoder.matches(request.getPassword(), driver.get().getPassword())){
                 driver.get().setDriverStatus(request.getDriverStatus());
                 driver.get().setLocation(request.getLocation());
                 driverRepository.save(driver.get());
@@ -135,6 +136,12 @@ public class DriverServiceImpl implements DriverService{
     @Override
     public PaymentResponse payment(PaymentRequest request) {
         return null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Driver driver = driverRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Driver not found"));
+        return new SecureDriver(driver);
     }
 //
 //    @Override

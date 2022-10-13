@@ -3,10 +3,10 @@ package com.semicolon.itaxi.dto.response;
 import lombok.*;
 
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RegisterDriverResponse {
     private String message;
 }
