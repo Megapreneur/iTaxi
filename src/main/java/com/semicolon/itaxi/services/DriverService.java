@@ -11,7 +11,7 @@ import java.util.List;
 public interface DriverService{
     RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException;
 
-    Driver getDriver(String location) throws NoDriverFoundException;
+    DriverDto getDriver(String location) throws NoDriverFoundException;
     RegisterVehicleResponse registerVehicle(RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException;
 
     LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException;

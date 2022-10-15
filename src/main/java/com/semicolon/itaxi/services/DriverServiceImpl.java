@@ -58,7 +58,7 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
     }
 
     @Override
-    public Driver getDriver(String location) throws NoDriverFoundException {
+    public DriverDto getDriver(String location) throws NoDriverFoundException {
         List<Driver> drivers = driverRepository.findByLocation(location);
         List<Driver> availableDriver = new ArrayList<>();
         for (Driver driver: drivers) {
@@ -68,7 +68,8 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
         }
         if (!availableDriver.isEmpty()){
             SecureRandom random = new SecureRandom();
-            return drivers.get(random.nextInt(drivers.size()));
+            Driver assignedDriver = drivers.get(random.nextInt(drivers.size()));
+            return driverRepository.getDriverDetails(assignedDriver);
         }
         throw new NoDriverFoundException("No driver available at your location", HttpStatus.NOT_FOUND);
     }

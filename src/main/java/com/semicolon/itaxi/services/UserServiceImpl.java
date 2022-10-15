@@ -1,6 +1,5 @@
 package com.semicolon.itaxi.services;
 
-import com.semicolon.itaxi.config.SecureDriver;
 import com.semicolon.itaxi.config.SecureUser;
 import com.semicolon.itaxi.data.models.*;
 import com.semicolon.itaxi.data.repositories.PaymentRepository;
@@ -74,7 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException, UserExistException {
         Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
         if (savedUser.isPresent()){
-            Driver assignedDriver = driverService.getDriver(request.getLocation());
+            DriverDto assignedDriver = driverService.getDriver(request.getLocation());
             Trip trip = modelMapper.map(request, Trip.class);
             Trip saved = tripRepository.save(trip);
             return getBookTripResponse(assignedDriver, saved);
@@ -94,7 +93,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
     }
 
-    private BookTripResponse getBookTripResponse(Driver assignedDriver, Trip saved) throws UserExistException {
+    public BookTripResponse getBookTripResponse(DriverDto assignedDriver, Trip saved) throws UserExistException {
         Optional<Vehicle> vehicle = vehicleRepository.findVehicleByDriver(assignedDriver);
         if(vehicle.isPresent()){
 
