@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                             trip.getPickUpAddress() + " to " + trip.getDropOffAddress() + " was successful!")
                     .build();
         }
-        return null;
+        throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
     }
 
     @Override

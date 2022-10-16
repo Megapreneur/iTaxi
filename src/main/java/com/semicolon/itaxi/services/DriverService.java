@@ -10,14 +10,10 @@ import java.util.List;
 
 public interface DriverService{
     RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException;
-
     DriverDto getDriver(String location) throws NoDriverFoundException;
     RegisterVehicleResponse registerVehicle(RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException;
-
     LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException;
     List<Trip> getHistoryOfAllTrips(String email) throws NoTripHistoryForUserException;
     BookingResponse bookingDetails();
     PaymentResponse payment(PaymentRequest request);
-
-
 }
