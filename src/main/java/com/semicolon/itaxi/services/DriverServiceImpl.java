@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.semicolon.itaxi.utils.ValidateEmail.isValidEmail;
+
 @Service
 
 public class DriverServiceImpl implements DriverService, UserDetailsService {
@@ -43,18 +45,21 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
 
 
     @Override
-    public RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException {
-        if (driverRepository.existsByEmail(request.getEmail())) throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
-        Driver driver = modelMapper.map(request, Driver.class);
-        driver.setPassword(passwordEncoder.encode(request.getPassword()));
-        if(request.getPassword().equals(request.getConfirmPassword())) {
-            Driver savedDrive = driverRepository.save(driver);
-            return RegisterDriverResponse
-                    .builder()
-                    .message("Hello " + savedDrive.getName() + " , Your registration was successful")
-                    .build();
+    public RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
+        if (isValidEmail(request.getEmail())){
+            if (driverRepository.existsByEmail(request.getEmail())) throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
+            Driver driver = modelMapper.map(request, Driver.class);
+            driver.setPassword(passwordEncoder.encode(request.getPassword()));
+            if(request.getPassword().equals(request.getConfirmPassword())) {
+                Driver savedDrive = driverRepository.save(driver);
+                return RegisterDriverResponse
+                        .builder()
+                        .message("Hello " + savedDrive.getName() + " , Your registration was successful")
+                        .build();
             }
-        throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
+            throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
+        }
+        throw new InvalidEmailException("This email is not valid", HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Override

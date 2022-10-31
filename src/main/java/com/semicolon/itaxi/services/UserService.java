@@ -8,7 +8,7 @@ import com.semicolon.itaxi.exceptions.*;
 import java.util.List;
 
 public interface UserService {
-    RegisterUserResponse register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException;
+    RegisterUserResponse register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException;
     LoginUserResponse login(LoginUserRequest request) throws InvalidUserException;
     BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException, UserExistException;
     List<Trip>getHistoryOfAllTrips(String email) throws NoTripHistoryForUserException;

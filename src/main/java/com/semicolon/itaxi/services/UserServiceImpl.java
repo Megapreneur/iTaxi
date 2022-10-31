@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.semicolon.itaxi.utils.ValidateEmail.isValidEmail;
+
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -40,18 +42,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public RegisterUserResponse register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException {
-        if (userRepository.existsByEmail(request.getEmail()))throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
-        User user = modelMapper.map(request, User.class);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        if (request.getPassword().equals(request.getConfirmPassword())){
-            User savedUser = userRepository.save(user);
-            return RegisterUserResponse
-                    .builder()
-                    .message( "Hello " + savedUser.getName() + " , Your registration was successful")
-                    .build();
+    public RegisterUserResponse register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
+        if (isValidEmail(request.getEmail())){
+            if (userRepository.existsByEmail(request.getEmail()))throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
+            User user = modelMapper.map(request, User.class);
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            if (request.getPassword().equals(request.getConfirmPassword())){
+                User savedUser = userRepository.save(user);
+                return RegisterUserResponse
+                        .builder()
+                        .message( "Hello " + savedUser.getName() + " , Your registration was successful")
+                        .build();
+            }
+            throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
         }
-        throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
+        throw new InvalidEmailException("This email address is invalid!", HttpStatus.NOT_ACCEPTABLE);
+
     }
 
     @Override
