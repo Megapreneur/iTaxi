@@ -2,6 +2,7 @@ package com.semicolon.itaxi.services;
 
 import com.semicolon.itaxi.data.models.Driver;
 import com.semicolon.itaxi.data.models.Trip;
+import com.semicolon.itaxi.data.models.Vehicle;
 import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
@@ -16,4 +17,6 @@ public interface DriverService{
     List<Trip> getHistoryOfAllTrips(String email) throws NoTripHistoryForUserException;
     BookingResponse bookingDetails();
     PaymentResponse payment(PaymentRequest request);
+
+    Vehicle getVehicleByDriver(Driver assignedDriver);
 }

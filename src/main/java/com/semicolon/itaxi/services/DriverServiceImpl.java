@@ -73,8 +73,7 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
         }
         if (!availableDriver.isEmpty()){
             SecureRandom random = new SecureRandom();
-            Driver assignedDriver = drivers.get(random.nextInt(drivers.size()));
-            return driverRepository.getDriverDetails(assignedDriver);
+            return drivers.get(random.nextInt(drivers.size()));
         }
         throw new NoDriverFoundException("No driver available at your location", HttpStatus.NOT_FOUND);
     }
@@ -142,6 +141,12 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
     @Override
     public PaymentResponse payment(PaymentRequest request) {
         return null;
+    }
+
+    @Override
+    public Vehicle getVehicleByDriver(Driver driver) {
+        return vehicleRepository.findByDriver(driver)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
     }
 
     @Override

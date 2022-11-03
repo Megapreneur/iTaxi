@@ -12,7 +12,10 @@ import java.util.Optional;
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     Optional<Vehicle> findByDriverId(long id);
 
-    Optional<Vehicle> findVehicleByDriver(DriverDto driver);
+//    Optional<Vehicle> findVehicleByDriver(DriverDto driver);
+//
+//    Vehicle getVehicleByDriver(Driver assignedDriver);
 
-    Vehicle getVehicleBtDriver(Driver assignedDriver);
+    Optional<Vehicle> findByDriver(Driver driver);
+
 }

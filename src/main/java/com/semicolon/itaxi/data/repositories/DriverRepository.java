@@ -22,6 +22,5 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
 //    @Query(value = "SELECT new com.semicolon.itaxi.dto.response.DriverDto (driver.name, driver.phoneNumber, car.carColour, car.carModel, car.carNumber)from Drivers driver JOIN cars car")
 //    DriverDto getDriverDetails(Driver driver);
-        Driver getDriverDetails(Driver driver);
 
 }

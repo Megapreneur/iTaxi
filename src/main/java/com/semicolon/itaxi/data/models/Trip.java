@@ -28,5 +28,5 @@ public class Trip {
 //    @JoinColumn(name = "payment_id")
 //    private Payment payment;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime time;
+    private LocalDateTime time = LocalDateTime.now();
 }

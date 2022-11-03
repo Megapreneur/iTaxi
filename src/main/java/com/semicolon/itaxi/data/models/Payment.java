@@ -25,4 +25,7 @@ public class Payment {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @ManyToOne
+    @JoinColumn(name = "driver_id")
+    private Driver driver;
 }

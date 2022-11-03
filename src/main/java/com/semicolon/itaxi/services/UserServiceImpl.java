@@ -32,8 +32,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private VehicleRepository vehicleRepository;
-    @Autowired
     private TripRepository tripRepository;
     @Autowired
     private PaymentRepository paymentRepository;
@@ -82,9 +80,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (savedUser.isPresent()){
             Driver assignedDriver = driverService.getDriver(request.getLocation());
             Trip trip = modelMapper.map(request, Trip.class);
+            trip.setDriver(assignedDriver);
+            trip.setUser(savedUser.get());
             Trip saved = tripRepository.save(trip);
-            Vehicle vehicle = vehicleRepository.getVehicleBtDriver(assignedDriver);
-            return getBookTripResponse(trip, saved, vehicle);
+            Vehicle vehicle = driverService.getVehicleByDriver(assignedDriver);
+            return getBookTripResponse(assignedDriver ,saved, vehicle);
         }
         throw new UserExistException("User does not exist", HttpStatus.NOT_FOUND);
     }
@@ -102,12 +102,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
     }
 
-    private BookTripResponse getBookTripResponse(Trip trip, Trip savedTrip, Vehicle vehicle){
+    private BookTripResponse getBookTripResponse(Driver driver, Trip savedTrip, Vehicle vehicle){
         return  BookTripResponse.builder()
                 .message("The have been connected to a driver")
-                .driverName(savedTrip.getDriver().getName())
-                .phoneNumber(savedTrip.getDriver().getPhoneNumber())
-                .dateOfRide(LocalDateTime.now())
+                .driverName(driver.getName())
+                .phoneNumber(driver.getPhoneNumber())
+                .dateOfRide(savedTrip.getTime())
                 .carModel(vehicle.getCarModel())
                 .vehicleNumber(vehicle.getCarNumber())
                 .carColor(vehicle.getCarColour())
@@ -119,6 +119,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (!trips.isEmpty()){
             Trip trip = trips.get(trips.size() - 1);
             Payment payment = modelMapper.map(paymentRequest, Payment.class);
+            payment.setTrip(trip);
+            payment.setUser(trip.getUser());
+//            payment.setDriver(trip.getDriver());
             Payment savedPayment = paymentRepository.save(payment);
             return PaymentResponse
                     .builder()
