@@ -8,10 +8,7 @@ import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
 import com.semicolon.itaxi.dto.response.BookTripResponse;
 import com.semicolon.itaxi.dto.response.LoginUserResponse;
 import com.semicolon.itaxi.dto.response.RegisterUserResponse;
-import com.semicolon.itaxi.exceptions.InvalidUserException;
-import com.semicolon.itaxi.exceptions.MismatchedPasswordException;
-import com.semicolon.itaxi.exceptions.NoDriverFoundException;
-import com.semicolon.itaxi.exceptions.UserExistException;
+import com.semicolon.itaxi.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -26,7 +23,7 @@ class UserServiceImplTest {
     private UserService userService;
 
     @Test
-    public void testThatAUserCanBeAdded() throws MismatchedPasswordException, UserExistException {
+    public void testThatAUserCanBeAdded() throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         RegisterUserRequest request = new RegisterUserRequest();
         request.setName("John Emeka");
         request.setEmail("je@gmail.com");

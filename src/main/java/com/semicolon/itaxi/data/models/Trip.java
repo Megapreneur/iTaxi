@@ -24,6 +24,9 @@ public class Trip {
     @JoinColumn(name = "driver_id")
 //    @Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     private Driver driver;
+//    @OneToOne
+//    @JoinColumn(name = "payment_id")
+//    private Payment payment;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime time;
 }

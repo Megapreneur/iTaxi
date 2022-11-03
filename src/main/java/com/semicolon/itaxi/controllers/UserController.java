@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid @NotNull RegisterUserRequest request) throws MismatchedPasswordException, UserExistException {
+    public ResponseEntity<?> register(@RequestBody @Valid @NotNull RegisterUserRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         RegisterUserResponse userDto = userService.register(request);
         ApiResponse apiResponse = ApiResponse
                 .builder()

@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,10 +80,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException, UserExistException {
         Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
         if (savedUser.isPresent()){
-            DriverDto assignedDriver = driverService.getDriver(request.getLocation());
+            Driver assignedDriver = driverService.getDriver(request.getLocation());
             Trip trip = modelMapper.map(request, Trip.class);
             Trip saved = tripRepository.save(trip);
-            return getBookTripResponse(assignedDriver, saved);
+            Vehicle vehicle = vehicleRepository.getVehicleBtDriver(assignedDriver);
+            return getBookTripResponse(trip, saved, vehicle);
         }
         throw new UserExistException("User does not exist", HttpStatus.NOT_FOUND);
     }
@@ -95,25 +97,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             if (!userTripHistory.isEmpty()){
                 return userTripHistory;
             }
+            throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
         }
         throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
     }
 
-    public BookTripResponse getBookTripResponse(DriverDto assignedDriver, Trip saved) throws UserExistException {
-        Optional<Vehicle> vehicle = vehicleRepository.findVehicleByDriver(assignedDriver);
-        if(vehicle.isPresent()){
-
-            return BookTripResponse.builder()
-                    .message("Your trip has been booked successfully")
-                    .name(saved.getDriver().getName())
-                    .phoneNumber(saved.getDriver().getPhoneNumber())
-                    .model(vehicle.get().getCarModel())
-                    .color(vehicle.get().getCarColour())
-                    .vehicleNumber(vehicle.get().getCarNumber())
-                    .dateOfRide(saved.getTime())
-                    .build();
-        }
-        throw new UserExistException("Vehicle is faulty", HttpStatus.NOT_FOUND);
+    private BookTripResponse getBookTripResponse(Trip trip, Trip savedTrip, Vehicle vehicle){
+        return  BookTripResponse.builder()
+                .message("The have been connected to a driver")
+                .driverName(savedTrip.getDriver().getName())
+                .phoneNumber(savedTrip.getDriver().getPhoneNumber())
+                .dateOfRide(LocalDateTime.now())
+                .carModel(vehicle.getCarModel())
+                .vehicleNumber(vehicle.getCarNumber())
+                .carColor(vehicle.getCarColour())
+                .build();
     }
     @Override
     public PaymentResponse makePayment(PaymentRequest paymentRequest) throws NoTripHistoryForUserException {

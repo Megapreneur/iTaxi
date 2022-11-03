@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 @Builder
 public class BookTripResponse {
     private String message;
-    private LocalDateTime dateOfRide = LocalDateTime.now();
-    private String name;
+    private LocalDateTime dateOfRide;
+    private String driverName;
     private String phoneNumber;
-    private String model;
+    private String carModel;
     private String vehicleNumber;
-    private String color;
+    private String carColor;
 }

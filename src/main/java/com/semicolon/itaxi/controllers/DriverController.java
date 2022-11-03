@@ -30,7 +30,7 @@ public class DriverController {
         this.driverService = driverService;
     }
     @PostMapping("/register")
-    public ResponseEntity<?>createDriver(@RequestBody @Valid @NotNull RegisterDriverRequest registerDriverRequest) throws MismatchedPasswordException, UserExistException {
+    public ResponseEntity<?>createDriver(@RequestBody @Valid @NotNull RegisterDriverRequest registerDriverRequest) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         log.info("Account Creation Request ==> {}", registerDriverRequest);
         RegisterDriverResponse driverDto = driverService.register(registerDriverRequest);
         ApiResponse apiResponse = ApiResponse

@@ -63,7 +63,7 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
     }
 
     @Override
-    public DriverDto getDriver(String location) throws NoDriverFoundException {
+    public Driver getDriver(String location) throws NoDriverFoundException {
         List<Driver> drivers = driverRepository.findByLocation(location);
         List<Driver> availableDriver = new ArrayList<>();
         for (Driver driver: drivers) {

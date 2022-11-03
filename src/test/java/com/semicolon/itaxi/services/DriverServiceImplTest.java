@@ -22,7 +22,7 @@ class DriverServiceImplTest {
     private DriverService driverService;
 
     @Test
-    public void testThatADriverCabBeRegistered() throws MismatchedPasswordException, UserExistException {
+    public void testThatADriverCabBeRegistered() throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         RegisterDriverRequest request = RegisterDriverRequest
                 .builder()
                 .name("Sunday Idowu")
