@@ -56,7 +56,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
         }
         throw new InvalidEmailException("This email address is invalid!", HttpStatus.NOT_ACCEPTABLE);
-
     }
 
     @Override

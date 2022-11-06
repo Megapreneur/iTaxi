@@ -40,8 +40,7 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
     private ModelMapper modelMapper;
     @Autowired
     private TripRepository tripRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
 
     @Override
@@ -103,19 +102,16 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
     }
 
     @Override
-    public LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException {
+    public LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException{
         Optional<Driver> driver = driverRepository.findByEmail(request.getEmail());
         if (driver.isPresent()){
-            if (passwordEncoder.matches(request.getPassword(), driver.get().getPassword())){
-                driver.get().setDriverStatus(request.getDriverStatus());
-                driver.get().setLocation(request.getLocation());
-                driverRepository.save(driver.get());
-                return LoginDriverResponse
-                        .builder()
-                        .message("Welcome back " + driver.get().getName() + ". Ready to go for some rides ?")
-                        .build();
-            }
-            throw new IncorrectPasswordException("Incorrect Password", HttpStatus.NOT_ACCEPTABLE);
+            driver.get().setDriverStatus(request.getDriverStatus());
+            driver.get().setLocation(request.getLocation());
+            driverRepository.save(driver.get());
+            return LoginDriverResponse
+                    .builder()
+                    .message("Welcome back " + driver.get().getName() + ". Ready to go for some rides ?")
+                    .build();
         }
             throw new InvalidDriverException("Invalid Driver details", HttpStatus.NOT_ACCEPTABLE);
     }
@@ -149,11 +145,8 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Driver driver = driverRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Driver not found"));
-        return new SecureDriver(driver);
-    }
+
+
 //
 //    @Override
 //    public PaymentResponse payment(PaymentRequest request) {
