@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class ITaxiAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        User
         return null;
     }
 

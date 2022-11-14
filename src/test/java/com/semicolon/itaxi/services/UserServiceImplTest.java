@@ -26,6 +26,7 @@ class UserServiceImplTest {
     public void testThatAUserCanBeAdded() throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         RegisterUserRequest request = new RegisterUserRequest();
         request.setName("John Emeka");
+
         request.setEmail("je@gmail.com");
         request.setGender(Gender.valueOf("MALE"));
         request.setPhoneNumber("09183643421");
