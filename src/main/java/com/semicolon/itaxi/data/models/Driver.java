@@ -16,24 +16,11 @@ import javax.validation.constraints.Email;
 @Entity(name = "Drivers")
 @Validated
 @Builder
-public class Driver {
+public class Driver extends Person{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String name;
-    private String address;
-    @Valid
-    @Email
-    @Column(unique = true)
-    private String email;
-    @Column(unique = true)
-    private String phoneNumber;
     private String location;
-    private String password;
-    @Enumerated(value = EnumType.STRING)
-    private Gender gender;
     @Enumerated(value = EnumType.STRING)
     private DriverStatus driverStatus;
-
-
 }

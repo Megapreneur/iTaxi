@@ -18,17 +18,9 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Table(name = "Users")
-public class User {
+public class User extends Person{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String name;
-    @Column(unique = true)
-    private String email;
-    @Column(unique = true)
-    private String phoneNumber;
-    private String address;
-    private String password;
-    @Enumerated(value = EnumType.STRING)
-    private Gender gender;
+
 }

@@ -1,6 +1,5 @@
 package com.semicolon.itaxi.services;
 
-import com.semicolon.itaxi.config.SecureUser;
 import com.semicolon.itaxi.data.models.*;
 import com.semicolon.itaxi.data.repositories.PaymentRepository;
 import com.semicolon.itaxi.data.repositories.TripRepository;
@@ -25,7 +24,7 @@ import java.util.Optional;
 import static com.semicolon.itaxi.utils.ValidateEmail.isValidEmail;
 
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
@@ -136,9 +135,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return null;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new SecureUser(user);
-    }
+
 }

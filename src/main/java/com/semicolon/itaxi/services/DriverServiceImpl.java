@@ -1,7 +1,6 @@
 package com.semicolon.itaxi.services;
 
 
-import com.semicolon.itaxi.config.SecureDriver;
 import com.semicolon.itaxi.data.models.Driver;
 import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.data.models.Vehicle;
@@ -30,7 +29,7 @@ import static com.semicolon.itaxi.utils.ValidateEmail.isValidEmail;
 
 @Service
 
-public class DriverServiceImpl implements DriverService, UserDetailsService {
+public class DriverServiceImpl implements DriverService{
 
     @Autowired
     private DriverRepository driverRepository;
@@ -40,6 +39,8 @@ public class DriverServiceImpl implements DriverService, UserDetailsService {
     private ModelMapper modelMapper;
     @Autowired
     private TripRepository tripRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
 
