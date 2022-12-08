@@ -14,6 +14,6 @@ public class ITaxiAuthenticationManager implements AuthenticationManager {
     private final ITaxiAuthenticationProvider iTaxiAuthenticationProvider;
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return null;
+        return iTaxiAuthenticationProvider.authenticate(authentication);
     }
 }

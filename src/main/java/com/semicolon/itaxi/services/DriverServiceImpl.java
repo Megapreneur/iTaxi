@@ -4,6 +4,7 @@ package com.semicolon.itaxi.services;
 import com.semicolon.itaxi.data.models.Driver;
 import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.data.models.Vehicle;
+import com.semicolon.itaxi.data.models.enums.Authority;
 import com.semicolon.itaxi.data.models.enums.DriverStatus;
 import com.semicolon.itaxi.data.repositories.DriverRepository;
 import com.semicolon.itaxi.data.repositories.TripRepository;
@@ -48,9 +49,10 @@ public class DriverServiceImpl implements DriverService{
     public RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         if (isValidEmail(request.getEmail())){
             if (driverRepository.existsByEmail(request.getEmail())) throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
-            Driver driver = modelMapper.map(request, Driver.class);
-            driver.setPassword(passwordEncoder.encode(request.getPassword()));
             if(request.getPassword().equals(request.getConfirmPassword())) {
+                Driver driver = modelMapper.map(request, Driver.class);
+                driver.setPassword(passwordEncoder.encode(request.getPassword()));
+                driver.getAuthorities().add(Authority.DRIVER);
                 Driver savedDrive = driverRepository.save(driver);
                 return RegisterDriverResponse
                         .builder()

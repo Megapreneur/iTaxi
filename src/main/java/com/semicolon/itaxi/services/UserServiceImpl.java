@@ -57,20 +57,20 @@ public class UserServiceImpl implements UserService {
         throw new InvalidEmailException("This email address is invalid!", HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @Override
-    public LoginUserResponse login(LoginUserRequest request) throws InvalidUserException {
-        Optional<User> user = userRepository.findByEmail(request.getEmail());
-        if (user.isPresent()){
-            if (passwordEncoder.matches(request.getPassword(), user.get().getPassword())){
-                return LoginUserResponse
-                        .builder()
-                        .message("Welcome back " + user.get().getName() + ". Where will you like to go today?")
-                        .build();
-            }
-            throw new InvalidUserException("Invalid login details!!!", HttpStatus.NOT_ACCEPTABLE);
-        }
-        throw new InvalidUserException("Invalid login details!!!", HttpStatus.NOT_FOUND);
-    }
+//    @Override
+//    public LoginUserResponse login(LoginUserRequest request) throws InvalidUserException {
+//        Optional<User> user = userRepository.findByEmail(request.getEmail());
+//        if (user.isPresent()){
+//            if (passwordEncoder.matches(request.getPassword(), user.get().getPassword())){
+//                return LoginUserResponse
+//                        .builder()
+//                        .message("Welcome back " + user.get().getName() + ". Where will you like to go today?")
+//                        .build();
+//            }
+//            throw new InvalidUserException("Invalid login details!!!", HttpStatus.NOT_ACCEPTABLE);
+//        }
+//        throw new InvalidUserException("Invalid login details!!!", HttpStatus.NOT_FOUND);
+//    }
 
     @Override
     public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException, UserExistException {
