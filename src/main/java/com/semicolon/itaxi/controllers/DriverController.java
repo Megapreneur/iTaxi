@@ -22,14 +22,14 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/iTaxi/drivers")
+@RequestMapping("/api/v1/iTaxi")
 public class DriverController {
     private final DriverService driverService;
 
     public DriverController(DriverService driverService){
         this.driverService = driverService;
     }
-    @PostMapping("/register")
+    @PostMapping("/driver/register")
     public ResponseEntity<?>createDriver(@RequestBody @Valid @NotNull RegisterDriverRequest registerDriverRequest) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         log.info("Account Creation Request ==> {}", registerDriverRequest);
         RegisterDriverResponse driverDto = driverService.register(registerDriverRequest);
@@ -42,7 +42,7 @@ public class DriverController {
         log.info("Returning response");
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
-    @PutMapping("/login")
+    @PutMapping("/driver/login")
     public ResponseEntity<?> login(@RequestBody LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException {
         LoginDriverResponse driverDto = driverService.login(request);
         ApiResponse apiResponse = ApiResponse
@@ -54,7 +54,7 @@ public class DriverController {
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/registerYourCar")
+    @PostMapping("/driver/registerYourCar")
     public ResponseEntity<?> registerVehicle(@RequestBody RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException {
         RegisterVehicleResponse driverDto = driverService.registerVehicle(request);
         ApiResponse apiResponse = ApiResponse
@@ -66,7 +66,7 @@ public class DriverController {
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/trips/{email}")
+    @GetMapping("/driver/trips/{email}")
     public List<Trip> getHistoryOfAllTrips(@PathVariable String email) throws NoTripHistoryForUserException{
         return driverService.getHistoryOfAllTrips(email);
     }

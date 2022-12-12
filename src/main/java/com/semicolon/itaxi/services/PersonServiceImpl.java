@@ -28,6 +28,15 @@ public class PersonServiceImpl implements PersonService{
     public LoginUserResponse login(LoginUserRequest request) {
         Optional<Admin> admin = adminRepository.findByEmail(request.getEmail());
         if(admin.isPresent() && passwordEncoder.matches(request.getPassword(), admin.get().getPassword())) return response(admin.get());
+        Optional<User> user = userRepository.findByEmail(request.getEmail());
+        if (user.isPresent() && passwordEncoder.matches(request.getPassword(), user.get().getPassword())) return response(user.get());
+        throw new UsernameNotFoundException("Invalid User Details");
+    }
+
+    private LoginUserResponse response(Person person){
+        return LoginUserResponse.builder()
+                .message(person.getName()+ " , you are logged in successfully")
+                .build();
     }
 
 

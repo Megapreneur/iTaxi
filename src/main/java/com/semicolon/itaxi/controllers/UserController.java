@@ -4,6 +4,7 @@ import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
+import com.semicolon.itaxi.services.PersonService;
 import com.semicolon.itaxi.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,13 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/iTaxi/users")
+@RequestMapping("/api/v1/iTaxi")
 public class UserController {
     @Autowired
     private UserService userService;
-    @PostMapping("/register")
+    @Autowired
+    private PersonService personService;
+    @PostMapping("user/register")
     public ResponseEntity<?> register(@RequestBody @Valid @NotNull RegisterUserRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         RegisterUserResponse userDto = userService.register(request);
         ApiResponse apiResponse = ApiResponse
@@ -35,7 +38,7 @@ public class UserController {
     }
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestBody LoginUserRequest request) throws InvalidUserException {
-        LoginUserResponse response = userService.login(request);
+        LoginUserResponse response = personService.login(request);
         ApiResponse apiResponse = ApiResponse
                 .builder()
                 .status("Okay")
@@ -45,7 +48,7 @@ public class UserController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/orderRide")
+    @GetMapping("/user/orderRide")
     public ResponseEntity<?> bookARide (@RequestBody @Valid @NotNull BookTripRequest request) throws NoDriverFoundException, UserExistException {
         log.info("Order a ride request ===> {}", request);
         BookTripResponse driverDto = userService.bookARide(request);
@@ -56,12 +59,12 @@ public class UserController {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
-    @GetMapping("/userTripHistory/{email}")
+    @GetMapping("/user/userTripHistory/{email}")
     public List<Trip> getHistoryOfAllTrips(@PathVariable String email)throws NoTripHistoryForUserException{
         return userService.getHistoryOfAllTrips(email);
     }
 
-    @PostMapping("/payment")
+    @PostMapping("/user/payment")
     public PaymentResponse makePayment(@RequestBody PaymentRequest request) throws NoTripHistoryForUserException {
         return userService.makePayment(request);
     }

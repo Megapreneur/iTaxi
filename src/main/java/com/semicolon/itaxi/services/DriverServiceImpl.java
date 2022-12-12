@@ -29,7 +29,6 @@ import java.util.Optional;
 import static com.semicolon.itaxi.utils.ValidateEmail.isValidEmail;
 
 @Service
-
 public class DriverServiceImpl implements DriverService{
 
     @Autowired

@@ -1,6 +1,5 @@
 package com.semicolon.itaxi.security.provider;
 
-import com.semicolon.itaxi.data.models.User;
 import com.semicolon.itaxi.utils.ITaxiUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
