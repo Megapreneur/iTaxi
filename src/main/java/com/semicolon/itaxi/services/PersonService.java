@@ -6,6 +6,7 @@ import com.semicolon.itaxi.dto.response.LoginUserResponse;
 
 public interface PersonService {
     LoginUserResponse login(LoginUserRequest request);
+    void forgetPassword(String email);
 
     Person getPersonByUsername(String email);
 }
