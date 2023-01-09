@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +18,7 @@ public class RegisterUserRequest {
     private String email;
     private String phoneNumber;
     private String address;
+    @Size(message = "password can not be less than 8 characters", min = 8)
     private String password;
     private String confirmPassword;
     private Gender gender;

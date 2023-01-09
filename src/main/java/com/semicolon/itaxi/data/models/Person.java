@@ -11,6 +11,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 

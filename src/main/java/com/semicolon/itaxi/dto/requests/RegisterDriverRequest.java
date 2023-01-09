@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -22,6 +23,7 @@ public class RegisterDriverRequest {
     @Column(unique = true)
     private String phoneNumber;
     private Gender gender;
+    @Size(message = "password can not be less than 8 characters", min = 8)
     private String password;
     private String confirmPassword;
 }

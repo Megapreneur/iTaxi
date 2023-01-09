@@ -9,5 +9,5 @@ import lombok.*;
 @Builder
 public class EmailNotificationRequest {
     private String userEmail;
-    private String mailContent;
+//    private String mailContent;
 }
