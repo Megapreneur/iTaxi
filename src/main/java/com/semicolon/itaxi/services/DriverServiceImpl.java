@@ -2,11 +2,13 @@ package com.semicolon.itaxi.services;
 
 
 import com.semicolon.itaxi.data.models.Driver;
+import com.semicolon.itaxi.data.models.TokenVerification;
 import com.semicolon.itaxi.data.models.Trip;
 import com.semicolon.itaxi.data.models.Vehicle;
 import com.semicolon.itaxi.data.models.enums.Authority;
 import com.semicolon.itaxi.data.models.enums.DriverStatus;
 import com.semicolon.itaxi.data.repositories.DriverRepository;
+import com.semicolon.itaxi.data.repositories.TokenVerificationRepository;
 import com.semicolon.itaxi.data.repositories.TripRepository;
 import com.semicolon.itaxi.data.repositories.VehicleRepository;
 import com.semicolon.itaxi.dto.requests.*;
@@ -22,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +45,13 @@ public class DriverServiceImpl implements DriverService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailNotificationService notificationService;
+
+    @Autowired
+    private TokenVerificationRepository tokenVerificationRepository;
+
+
 
 
     @Override
@@ -53,6 +63,12 @@ public class DriverServiceImpl implements DriverService{
                 driver.setPassword(passwordEncoder.encode(request.getPassword()));
                 driver.getAuthorities().add(Authority.DRIVER);
                 Driver savedDrive = driverRepository.save(driver);
+                String otp = new DecimalFormat("000000").format(new SecureRandom().nextInt(999999));
+                TokenVerification newToken = new TokenVerification();
+                newToken.setToken(otp);
+                newToken.setUserEmail(request.getEmail());
+                tokenVerificationRepository.save(newToken);
+                notificationService.sendWelcomeMessageToDriver(request,otp);
                 return RegisterDriverResponse
                         .builder()
                         .message("Hello " + savedDrive.getName() + " , Your registration was successful")

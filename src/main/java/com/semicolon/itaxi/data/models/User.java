@@ -22,5 +22,5 @@ public class User extends Person{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    private boolean isEnabled;
 }

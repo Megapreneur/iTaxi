@@ -21,6 +21,7 @@ public class Driver extends Person{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String location;
+    private boolean isEnabled;
     @Enumerated(value = EnumType.STRING)
     private DriverStatus driverStatus;
 }
