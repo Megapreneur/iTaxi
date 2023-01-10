@@ -44,7 +44,21 @@ public class PersonServiceImpl implements PersonService{
 
     @Override
     public void verifyUser(String token) throws ITaxiException {
-
+        TokenVerification savedToken = tokenVerificationRepository.findByToken(token)
+                .orElseThrow(() -> new ITaxiException("Token is invalid"));
+        Optional<User> user = userRepository.findByEmail(savedToken.getUserEmail());
+        Calendar calendar = Calendar.getInstance();
+        if((savedToken.getExpiresAt().getTime() - calendar.getTime().getTime()) <= 0){
+            tokenVerificationRepository.delete(savedToken);
+            String newOtp = generateToken(user.get().getEmail());
+            notificationService.newTokenMail(user.get().getEmail(), newOtp);
+            log.warn("Token has expired, please check your email for another token");
+            throw new ITaxiException("Token has expired, please check your email for another token");
+        }else{
+            user.get().setEnabled(true);
+            userRepository.save(user.get());
+        }
+        tokenVerificationRepository.delete(savedToken);
     }
 
     @Override
@@ -69,13 +83,17 @@ public class PersonServiceImpl implements PersonService{
 
 
     @Override
-    public void forgetPassword(String email) {
-        Optional<Admin> admin = adminRepository.findByEmail(email.toLowerCase());
-        if (admin.isPresent()){
+    public void forgetPassword(String email) throws ITaxiException {
+        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email.toLowerCase()).orElseThrow(() ->
+                new ITaxiException("User with this email does not exist")));
+        if (user.isPresent()){
             String newOtp = generateToken(email);
-
+            notificationService.sendResetPasswordMail(email.toLowerCase(), newOtp);
         }
-        Optional<User> user = userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void verifyForgetPassword(String token, String password) {
 
     }
 
@@ -83,7 +101,7 @@ public class PersonServiceImpl implements PersonService{
         String otp = new DecimalFormat("000000").format(new SecureRandom().nextInt(999999));
         TokenVerification newToken = new TokenVerification();
         newToken.setToken(otp);
-        newToken.setUserEmail(email);
+        newToken.setUserEmail(email.toLowerCase());
         tokenVerificationRepository.save(newToken);
         return otp;
     }

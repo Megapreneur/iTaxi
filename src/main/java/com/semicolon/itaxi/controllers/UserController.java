@@ -24,7 +24,7 @@ public class UserController {
     private UserService userService;
     @Autowired
     private PersonService personService;
-    @PostMapping("user/register")
+    @PostMapping("/user/register")
     public ResponseEntity<?> register(@RequestBody @Valid @NotNull RegisterUserRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         RegisterUserResponse userDto = userService.register(request);
         ApiResponse apiResponse = ApiResponse
@@ -34,6 +34,10 @@ public class UserController {
                 .data(userDto)
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+
+    }
+    @PostMapping("/user/verify?token")
+    public ResponseEntity<?>verifyUser(){
 
     }
     @PostMapping("/login")

@@ -41,7 +41,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService{
 
     @Override
     public void sendWelcomeMessageToCustomer(RegisterUserRequest userDto, String token) {
-        String link = baseUrl + "/v1/user/verify?token=" +token;
+        String link = baseUrl + "/v1/iTaxi/user/verify?token=" +token;
         final SimpleMailMessage mailMessage = new SimpleMailMessage();
 
         mailMessage.setTo(userDto.getEmail());

@@ -57,16 +57,17 @@ public class DriverServiceImpl implements DriverService{
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         if (isValidEmail(request.getEmail())){
-            if (driverRepository.existsByEmail(request.getEmail())) throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
+            if (driverRepository.existsByEmail(request.getEmail().toLowerCase())) throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
             if(request.getPassword().equals(request.getConfirmPassword())) {
                 Driver driver = modelMapper.map(request, Driver.class);
                 driver.setPassword(passwordEncoder.encode(request.getPassword()));
+                driver.setEmail(request.getEmail().toLowerCase());
                 driver.getAuthorities().add(Authority.DRIVER);
                 Driver savedDrive = driverRepository.save(driver);
                 String otp = new DecimalFormat("000000").format(new SecureRandom().nextInt(999999));
                 TokenVerification newToken = new TokenVerification();
                 newToken.setToken(otp);
-                newToken.setUserEmail(request.getEmail());
+                newToken.setUserEmail(request.getEmail().toLowerCase());
                 tokenVerificationRepository.save(newToken);
                 notificationService.sendWelcomeMessageToDriver(request,otp);
                 return RegisterDriverResponse
@@ -97,7 +98,7 @@ public class DriverServiceImpl implements DriverService{
 
     @Override
     public RegisterVehicleResponse registerVehicle(RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException {
-        Optional<Driver> driver = driverRepository.findByEmail(request.getEmail());
+        Optional<Driver> driver = driverRepository.findByEmail(request.getEmail().toLowerCase());
         if (driver.isPresent()){
             Optional<Vehicle> savedVehicle = vehicleRepository.findByDriverId(driver.get().getId());
             if (savedVehicle.isEmpty()){
@@ -121,7 +122,7 @@ public class DriverServiceImpl implements DriverService{
 
     @Override
     public LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException{
-        Optional<Driver> driver = driverRepository.findByEmail(request.getEmail());
+        Optional<Driver> driver = driverRepository.findByEmail(request.getEmail().toLowerCase());
         if (driver.isPresent()){
             driver.get().setDriverStatus(request.getDriverStatus());
             driver.get().setLocation(request.getLocation());
@@ -136,7 +137,7 @@ public class DriverServiceImpl implements DriverService{
 
     @Override
     public List<Trip> getHistoryOfAllTrips(String email) throws NoTripHistoryForUserException {
-        Optional<Driver> savedDriver = driverRepository.findByEmail(email);
+        Optional<Driver> savedDriver = driverRepository.findByEmail(email.toLowerCase());
         if (savedDriver.isPresent()){
             List<Trip> tripHistory = tripRepository.findTripsByDriver(savedDriver.get());
             if (!tripHistory.isEmpty()){

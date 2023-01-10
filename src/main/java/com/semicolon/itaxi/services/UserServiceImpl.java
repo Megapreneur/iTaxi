@@ -2,6 +2,7 @@ package com.semicolon.itaxi.services;
 
 import com.semicolon.itaxi.data.models.*;
 import com.semicolon.itaxi.data.repositories.PaymentRepository;
+import com.semicolon.itaxi.data.repositories.TokenVerificationRepository;
 import com.semicolon.itaxi.data.repositories.TripRepository;
 import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.*;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,15 +36,27 @@ public class UserServiceImpl implements UserService {
     private DriverService driverService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private TokenVerificationRepository tokenVerificationRepository;
+
+    @Autowired
+    private EmailNotificationService notificationService;
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         if (isValidEmail(request.getEmail())){
-            if (userRepository.existsByEmail(request.getEmail()))throw new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
+            if (userRepository.existsByEmail(request.getEmail().toLowerCase()))throw new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
             if (request.getPassword().equals(request.getConfirmPassword())){
                 User user = modelMapper.map(request, User.class);
+                user.setEmail(request.getEmail().toLowerCase());
                 user.setPassword(passwordEncoder.encode(request.getPassword()));
                 User savedUser = userRepository.save(user);
+                String otp = new DecimalFormat("000000").format(new SecureRandom().nextInt(999999));
+                TokenVerification newToken = new TokenVerification();
+                newToken.setToken(otp);
+                newToken.setUserEmail(request.getEmail().toLowerCase());
+                tokenVerificationRepository.save(newToken);
+                notificationService.sendWelcomeMessageToCustomer(request, otp);
                 return RegisterUserResponse
                         .builder()
                         .message( "Hello " + savedUser.getName() + " , Your registration was successful")
@@ -54,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException, UserExistException {
-        Optional<User> savedUser = userRepository.findByEmail(request.getEmail());
+        Optional<User> savedUser = userRepository.findByEmail(request.getEmail().toLowerCase());
         if (savedUser.isPresent()){
             Driver assignedDriver = driverService.getDriver(request.getLocation());
             Trip trip = modelMapper.map(request, Trip.class);
@@ -69,7 +84,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Trip> getHistoryOfAllTrips(String email) throws NoTripHistoryForUserException {
-        Optional<User> savedUser = userRepository.findByEmail(email);
+        Optional<User> savedUser = userRepository.findByEmail(email.toLowerCase());
         if (savedUser.isPresent()){
             List<Trip> userTripHistory = tripRepository.findTripsByUser(savedUser.get());
             if (!userTripHistory.isEmpty()){
@@ -93,7 +108,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public PaymentResponse makePayment(PaymentRequest paymentRequest) throws NoTripHistoryForUserException {
-        List<Trip> trips = getHistoryOfAllTrips(paymentRequest.getEmail());
+        List<Trip> trips = getHistoryOfAllTrips(paymentRequest.getEmail().toLowerCase());
         if (!trips.isEmpty()){
             Trip trip = trips.get(trips.size() - 1);
             Payment payment = modelMapper.map(paymentRequest, Payment.class);

@@ -10,7 +10,9 @@ public interface PersonService {
     void verifyUser(String token) throws ITaxiException;
     void verifyDriver(String token) throws ITaxiException;
 
-    void forgetPassword(String email);
+    void forgetPassword(String email) throws ITaxiException;
+    void verifyForgetPassword(String token, String password);
+
 
     Person getPersonByUsername(String email);
 }
