@@ -31,13 +31,18 @@ public class UserController {
                 .builder()
                 .status("Success")
                 .message("User created ")
-                .data(userDto)
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
 
     }
     @PostMapping("/user/verify?token")
-    public ResponseEntity<?>verifyUser(){
+    public ResponseEntity<?>verifyUser(@RequestParam String token) throws ITaxiException {
+        userService.verifyUser(token);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status("Okay")
+                .message("Verification is successful")
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
 
     }
     @PostMapping("/login")

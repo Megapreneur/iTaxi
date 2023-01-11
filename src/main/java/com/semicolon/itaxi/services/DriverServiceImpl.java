@@ -14,6 +14,7 @@ import com.semicolon.itaxi.data.repositories.VehicleRepository;
 import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,12 +27,14 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
 import static com.semicolon.itaxi.utils.ValidateEmail.isValidEmail;
 
 @Service
+@Slf4j
 public class DriverServiceImpl implements DriverService{
 
     @Autowired
@@ -50,6 +53,8 @@ public class DriverServiceImpl implements DriverService{
 
     @Autowired
     private TokenVerificationRepository tokenVerificationRepository;
+    @Autowired
+    private PersonService personService;
 
 
 
@@ -78,6 +83,44 @@ public class DriverServiceImpl implements DriverService{
             throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
         }
         throw new InvalidEmailException("This email is not valid", HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @Override
+    public void verifyDriver(String token) throws ITaxiException {
+        TokenVerification savedToken = tokenVerificationRepository.findByToken(token)
+                .orElseThrow(() -> new ITaxiException("Token is invalid"));
+
+        Optional<Driver> driver = driverRepository.findByEmail(savedToken.getUserEmail());
+        Calendar calendar = Calendar.getInstance();
+        if((savedToken.getExpiresAt().getTime() - calendar.getTime().getTime()) <= 0){
+            tokenVerificationRepository.delete(savedToken);
+            String newOtp = personService.generateToken(driver.get().getEmail());
+            notificationService.newTokenMail(driver.get().getEmail(), newOtp);
+            log.warn("Token has expired, please check your email for another token");
+            throw new ITaxiException("Token has expired, please check your email for another token");
+        }else{
+            driver.get().setEnabled(true);
+            driverRepository.save(driver.get());
+        }
+        tokenVerificationRepository.delete(savedToken);
+    }
+    @Override
+    public void verifyForgetPasswordDriver(String token, String password) throws ITaxiException {
+        TokenVerification savedToken = tokenVerificationRepository.findByToken(token)
+                .orElseThrow(() -> new ITaxiException("token does not exist"));
+
+        Optional<Driver> driver = driverRepository.findByEmail(savedToken.getUserEmail().toLowerCase());
+
+        Calendar cal = Calendar.getInstance();
+        if((savedToken.getExpiresAt().getTime() - cal.getTime().getTime()) <= 0){
+            tokenVerificationRepository.delete(savedToken);
+            String newOtp = personService.generateToken(driver.get().getEmail().toLowerCase());
+            notificationService.sendResetPasswordMail(driver.get().getEmail(), newOtp);
+            log.warn("Token has expired, please check your email for another token");
+        }else{
+            driver.get().setEnabled(true);
+            driverRepository.save(driver.get());
+        }
     }
 
     @Override
@@ -150,11 +193,6 @@ public class DriverServiceImpl implements DriverService{
 
     @Override
     public BookingResponse bookingDetails() {
-        return null;
-    }
-
-    @Override
-    public PaymentResponse payment(PaymentRequest request) {
         return null;
     }
 

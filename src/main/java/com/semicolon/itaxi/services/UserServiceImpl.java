@@ -8,6 +8,7 @@ import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.*;
 import com.semicolon.itaxi.dto.response.*;
 import com.semicolon.itaxi.exceptions.*;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,12 +17,14 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
 import static com.semicolon.itaxi.utils.ValidateEmail.isValidEmail;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -41,6 +44,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private EmailNotificationService notificationService;
+
+    @Autowired
+    private PersonService personService;
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
@@ -65,6 +71,43 @@ public class UserServiceImpl implements UserService {
             throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
         }
         throw new InvalidEmailException("This email address is invalid!", HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @Override
+    public void verifyUser(String token) throws ITaxiException {
+        TokenVerification savedToken = tokenVerificationRepository.findByToken(token)
+                .orElseThrow(() -> new ITaxiException("Token is invalid"));
+        Optional<User> user = userRepository.findByEmail(savedToken.getUserEmail());
+        Calendar calendar = Calendar.getInstance();
+        if((savedToken.getExpiresAt().getTime() - calendar.getTime().getTime()) <= 0){
+            tokenVerificationRepository.delete(savedToken);
+            String newOtp = personService.generateToken(user.get().getEmail());
+            notificationService.newTokenMail(user.get().getEmail(), newOtp);
+            log.warn("Token has expired, please check your email for another token");
+            throw new ITaxiException("Token has expired, please check your email for another token");
+        }else{
+            user.get().setEnabled(true);
+            userRepository.save(user.get());
+        }
+        tokenVerificationRepository.delete(savedToken);
+    }
+    @Override
+    public void verifyForgetPasswordUser(String token, String password) throws ITaxiException {
+        TokenVerification userToken = tokenVerificationRepository.findByToken(token)
+                .orElseThrow(() -> new ITaxiException("token does not exist"));
+
+        Optional<User> user = userRepository.findByEmail(userToken.getUserEmail().toLowerCase());
+
+        Calendar cal = Calendar.getInstance();
+        if((userToken.getExpiresAt().getTime() - cal.getTime().getTime()) <= 0){
+            tokenVerificationRepository.delete(userToken);
+            String newOtp = personService.generateToken(user.get().getEmail().toLowerCase());
+            notificationService.sendResetPasswordMail(user.get().getEmail(), newOtp);
+            log.warn("Token has expired, please check your email for another token");
+        }else{
+            user.get().setEnabled(true);
+            userRepository.save(user.get());
+        }
     }
 
     @Override
