@@ -1,17 +1,22 @@
 package com.semicolon.itaxi.services;
 
 import com.semicolon.itaxi.data.models.*;
+import com.semicolon.itaxi.data.models.enums.Authority;
 import com.semicolon.itaxi.data.repositories.PaymentRepository;
 import com.semicolon.itaxi.data.repositories.TokenVerificationRepository;
 import com.semicolon.itaxi.data.repositories.TripRepository;
 import com.semicolon.itaxi.data.repositories.UserRepository;
-import com.semicolon.itaxi.dto.requests.*;
-import com.semicolon.itaxi.dto.response.*;
+import com.semicolon.itaxi.dto.requests.BookTripRequest;
+import com.semicolon.itaxi.dto.requests.PaymentRequest;
+import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
+import com.semicolon.itaxi.dto.response.BookTripResponse;
+import com.semicolon.itaxi.dto.response.PaymentResponse;
+import com.semicolon.itaxi.dto.response.RegisterUserResponse;
+import com.semicolon.itaxi.dto.response.UserResponse;
 import com.semicolon.itaxi.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,10 +56,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         if (isValidEmail(request.getEmail())){
-            if (userRepository.existsByEmail(request.getEmail().toLowerCase()))throw new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
+            if (userRepository.existsByEmail(request.getEmail().toLowerCase()))throw new UserExistException("User Already Exist");
             if (request.getPassword().equals(request.getConfirmPassword())){
                 User user = modelMapper.map(request, User.class);
                 user.setEmail(request.getEmail().toLowerCase());
+                user.getAuthority().add(Authority.USER);
                 user.setPassword(passwordEncoder.encode(request.getPassword()));
                 User savedUser = userRepository.save(user);
                 String otp = new DecimalFormat("000000").format(new SecureRandom().nextInt(999999));
@@ -68,9 +74,9 @@ public class UserServiceImpl implements UserService {
                         .message( "Hello " + savedUser.getName() + " , Your registration was successful")
                         .build();
             }
-            throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
+            throw new MismatchedPasswordException("Password does not match!!!");
         }
-        throw new InvalidEmailException("This email address is invalid!", HttpStatus.NOT_ACCEPTABLE);
+        throw new InvalidEmailException("This email address is invalid!");
     }
 
     @Override
@@ -111,6 +117,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void userForgetPassword(String email) throws ITaxiException {
+        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email.toLowerCase()).orElseThrow(() ->
+                new ITaxiException("User with this email does not exist")));
+        if (user.isPresent()){
+            String newOtp = personService.generateToken(email);
+            notificationService.sendResetPasswordMail(email.toLowerCase(), newOtp);
+        }
+        throw new ITaxiException("User with this email does not exist");
+    }
+
+    @Override
     public BookTripResponse bookARide(BookTripRequest request) throws NoDriverFoundException, UserExistException {
         Optional<User> savedUser = userRepository.findByEmail(request.getEmail().toLowerCase());
         if (savedUser.isPresent()){
@@ -122,7 +139,7 @@ public class UserServiceImpl implements UserService {
             Vehicle vehicle = driverService.getVehicleByDriver(assignedDriver);
             return getBookTripResponse(assignedDriver ,saved, vehicle);
         }
-        throw new UserExistException("User does not exist", HttpStatus.NOT_FOUND);
+        throw new UserExistException("User does not exist");
     }
 
     @Override
@@ -133,9 +150,9 @@ public class UserServiceImpl implements UserService {
             if (!userTripHistory.isEmpty()){
                 return userTripHistory;
             }
-            throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
+            throw new NoTripHistoryForUserException("You have no trip history");
         }
-        throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
+        throw new NoTripHistoryForUserException("You have no trip history");
     }
 
     private BookTripResponse getBookTripResponse(Driver driver, Trip savedTrip, Vehicle vehicle){
@@ -165,7 +182,7 @@ public class UserServiceImpl implements UserService {
                             trip.getPickUpAddress() + " to " + trip.getDropOffAddress() + " was successful!")
                     .build();
         }
-        throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
+        throw new NoTripHistoryForUserException("You have no trip history");
     }
 
     @Override

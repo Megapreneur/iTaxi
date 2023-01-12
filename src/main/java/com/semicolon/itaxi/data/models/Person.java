@@ -6,12 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +32,6 @@ public class Person {
     private Gender gender;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(value = EnumType.STRING)
-    private Set<Authority> authorities = new HashSet<>();
+    private Set<Authority> authority = new HashSet<>();
 
 }

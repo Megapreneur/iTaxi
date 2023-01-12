@@ -1,21 +1,20 @@
 package com.semicolon.itaxi.services;
 
 import com.semicolon.itaxi.data.models.*;
-import com.semicolon.itaxi.data.repositories.*;
+import com.semicolon.itaxi.data.repositories.AdminRepository;
+import com.semicolon.itaxi.data.repositories.DriverRepository;
+import com.semicolon.itaxi.data.repositories.TokenVerificationRepository;
+import com.semicolon.itaxi.data.repositories.UserRepository;
 import com.semicolon.itaxi.dto.requests.LoginUserRequest;
 import com.semicolon.itaxi.dto.response.LoginUserResponse;
-import com.semicolon.itaxi.exceptions.ITaxiException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.InvalidTransactionException;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Optional;
 
 @Service
@@ -23,12 +22,10 @@ import java.util.Optional;
 @Slf4j
 
 public class PersonServiceImpl implements PersonService{
-    private final NotificationRepository notificationRepository;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
     private final DriverRepository driverRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailNotificationService notificationService;
     private final TokenVerificationRepository tokenVerificationRepository;
 
     @Override
@@ -80,16 +77,16 @@ public class PersonServiceImpl implements PersonService{
 //    }
 
 
-    @Override
-    public void forgetPassword(String email) throws ITaxiException {
-        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email.toLowerCase()).orElseThrow(() ->
-                new ITaxiException("User with this email does not exist")));
-        if (user.isPresent()){
-            String newOtp = generateToken(email);
-            notificationService.sendResetPasswordMail(email.toLowerCase(), newOtp);
-        }
-        throw new ITaxiException("User with this email does not exist");
-    }
+//    @Override
+//    public void forgetPassword(String email) throws ITaxiException {
+//        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email.toLowerCase()).orElseThrow(() ->
+//                new ITaxiException("User with this email does not exist")));
+//        if (user.isPresent()){
+//            String newOtp = generateToken(email);
+//            notificationService.sendResetPasswordMail(email.toLowerCase(), newOtp);
+//        }
+//        throw new ITaxiException("User with this email does not exist");
+//    }
 
 
 

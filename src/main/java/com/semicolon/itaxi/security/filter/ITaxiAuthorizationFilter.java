@@ -31,24 +31,26 @@ public class ITaxiAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }else{
             if (authHeader != null && authHeader.startsWith("Bearer ")){
-                String token = authHeader.substring("Bearer ".length());
-                JWTVerifier verifier = JWT.require(Algorithm.HMAC512("this-is-my-application"))
-                        .build();
-                DecodedJWT decodedJWT = verifier.verify(token);
-                String subject = decodedJWT.getSubject();
-                List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+                try {
+                    String token = authHeader.substring("Bearer ".length());
+                    JWTVerifier verifier = JWT.require(Algorithm.HMAC512("this-is-my-application"))
+                            .build();
+                    DecodedJWT decodedJWT = verifier.verify(token);
+                    String subject = decodedJWT.getSubject();
+                    List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
 
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(subject, null,
-                        roles
-                                .stream()
-                                .map(SimpleGrantedAuthority::new)
-                                .toList());
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-                filterChain.doFilter(request, response);
-//                response.setContentType(APPLICATION_JSON_VALUE);
-//                mapper.writeValue(response.getOutputStream());
-            }
-            else filterChain.doFilter(request, response);
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(subject, null,
+                            roles
+                                    .stream()
+                                    .map(SimpleGrantedAuthority::new)
+                                    .toList());
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    filterChain.doFilter(request, response);
+                }catch (Exception e) {
+                    response.setContentType(APPLICATION_JSON_VALUE);
+                    mapper.writeValue(response.getOutputStream(), e.getMessage());
+                }
+            }else filterChain.doFilter(request, response);
         }
     }
 }

@@ -11,16 +11,17 @@ import com.semicolon.itaxi.data.repositories.DriverRepository;
 import com.semicolon.itaxi.data.repositories.TokenVerificationRepository;
 import com.semicolon.itaxi.data.repositories.TripRepository;
 import com.semicolon.itaxi.data.repositories.VehicleRepository;
-import com.semicolon.itaxi.dto.requests.*;
-import com.semicolon.itaxi.dto.response.*;
+import com.semicolon.itaxi.dto.requests.LoginDriverRequest;
+import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
+import com.semicolon.itaxi.dto.requests.RegisterVehicleRequest;
+import com.semicolon.itaxi.dto.response.BookingResponse;
+import com.semicolon.itaxi.dto.response.LoginDriverResponse;
+import com.semicolon.itaxi.dto.response.RegisterDriverResponse;
+import com.semicolon.itaxi.dto.response.RegisterVehicleResponse;
 import com.semicolon.itaxi.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,12 +63,12 @@ public class DriverServiceImpl implements DriverService{
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         if (isValidEmail(request.getEmail())){
-            if (driverRepository.existsByEmail(request.getEmail().toLowerCase())) throw  new UserExistException("User Already Exist", HttpStatus.FORBIDDEN);
+            if (driverRepository.existsByEmail(request.getEmail().toLowerCase())) throw  new UserExistException("User Already Exist");
             if(request.getPassword().equals(request.getConfirmPassword())) {
                 Driver driver = modelMapper.map(request, Driver.class);
                 driver.setPassword(passwordEncoder.encode(request.getPassword()));
                 driver.setEmail(request.getEmail().toLowerCase());
-                driver.getAuthorities().add(Authority.DRIVER);
+                driver.getAuthority().add(Authority.DRIVER);
                 Driver savedDrive = driverRepository.save(driver);
                 String otp = new DecimalFormat("000000").format(new SecureRandom().nextInt(999999));
                 TokenVerification newToken = new TokenVerification();
@@ -80,9 +81,9 @@ public class DriverServiceImpl implements DriverService{
                         .message("Hello " + savedDrive.getName() + " , Your registration was successful")
                         .build();
             }
-            throw new MismatchedPasswordException("Password does not match!!!", HttpStatus.FORBIDDEN);
+            throw new MismatchedPasswordException("Password does not match!!!");
         }
-        throw new InvalidEmailException("This email is not valid", HttpStatus.NOT_ACCEPTABLE);
+        throw new InvalidEmailException("This email is not valid");
     }
 
     @Override
@@ -104,6 +105,18 @@ public class DriverServiceImpl implements DriverService{
         }
         tokenVerificationRepository.delete(savedToken);
     }
+
+    @Override
+    public void driverForgetPassword(String email) throws ITaxiException {
+        Optional<Driver> driver = Optional.ofNullable(driverRepository.findByEmail(email.toLowerCase()).orElseThrow(() ->
+                new ITaxiException("User with this email does not exist")));
+        if (driver.isPresent()){
+            String newOtp = personService.generateToken(email);
+            notificationService.sendResetPasswordMail(email.toLowerCase(), newOtp);
+        }
+        throw new ITaxiException("User with this email does not exist");
+    }
+
     @Override
     public void verifyForgetPasswordDriver(String token, String password) throws ITaxiException {
         TokenVerification savedToken = tokenVerificationRepository.findByToken(token)
@@ -136,7 +149,7 @@ public class DriverServiceImpl implements DriverService{
             SecureRandom random = new SecureRandom();
             return drivers.get(random.nextInt(drivers.size()));
         }
-        throw new NoDriverFoundException("No driver available at your location", HttpStatus.NOT_FOUND);
+        throw new NoDriverFoundException("No driver available at your location");
     }
 
     @Override
@@ -158,9 +171,9 @@ public class DriverServiceImpl implements DriverService{
                         .message(driver.get().getName() + " your car has been registered successfully. Safe trips")
                         .build();
             }
-            throw new InvalidActionException("You can't register more than a car !!!", HttpStatus.FORBIDDEN);
+            throw new InvalidActionException("You can't register more than a car !!!");
         }
-            throw new InvalidDriverException("Invalid Driver details", HttpStatus.NOT_ACCEPTABLE);
+            throw new InvalidDriverException("Invalid Driver details");
     }
 
     @Override
@@ -175,7 +188,7 @@ public class DriverServiceImpl implements DriverService{
                     .message("Welcome back " + driver.get().getName() + ". Ready to go for some rides ?")
                     .build();
         }
-            throw new InvalidDriverException("Invalid Driver details", HttpStatus.NOT_ACCEPTABLE);
+            throw new InvalidDriverException("Invalid Driver details");
     }
 
     @Override
@@ -186,9 +199,9 @@ public class DriverServiceImpl implements DriverService{
             if (!tripHistory.isEmpty()){
                 return tripHistory;
             }
-            throw new NoTripHistoryForUserException("You have no trip history", HttpStatus.NOT_FOUND);
+            throw new NoTripHistoryForUserException("You have no trip history");
         }
-        throw new NoTripHistoryForUserException("Invalid login details", HttpStatus.NOT_FOUND);
+        throw new NoTripHistoryForUserException("Invalid login details");
     }
 
     @Override

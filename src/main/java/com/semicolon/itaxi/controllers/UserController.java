@@ -43,8 +43,25 @@ public class UserController {
                 .message("Verification is successful")
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
-
     }
+    @PatchMapping("/user/forget-password")
+    public ResponseEntity<?>forgetPassword(@RequestParam String email) throws ITaxiException {
+        userService.userForgetPassword(email);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status("Okay")
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
+    }
+    @PutMapping("/user/verify-user-forget-password")
+    public ResponseEntity<?>verifyUserForgetPassword(@RequestParam String token, @RequestParam String password) throws ITaxiException {
+        userService.verifyForgetPasswordUser(token, password);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status("Okay")
+                .message("Verification is successful")
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestBody LoginUserRequest request) throws InvalidUserException {
         LoginUserResponse response = personService.login(request);

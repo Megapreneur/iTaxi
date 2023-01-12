@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/iTaxi")
 public class AdminController {
     @Autowired
-    private PersonService personService;
-    @Autowired
     private AdminService adminService;
 
     @PostMapping("admin/register")

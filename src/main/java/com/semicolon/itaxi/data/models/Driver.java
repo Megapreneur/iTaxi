@@ -1,13 +1,10 @@
 package com.semicolon.itaxi.data.models;
 
 import com.semicolon.itaxi.data.models.enums.DriverStatus;
-import com.semicolon.itaxi.data.models.enums.Gender;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.Email;
 
 @Getter
 @Setter

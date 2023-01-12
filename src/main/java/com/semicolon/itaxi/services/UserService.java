@@ -12,6 +12,8 @@ public interface UserService {
 
     void verifyUser(String token) throws ITaxiException;
     void verifyForgetPasswordUser(String token, String password) throws ITaxiException;
+    void userForgetPassword(String email) throws ITaxiException;
+
 
 
     //    LoginUserResponse login(LoginUserRequest request) throws InvalidUserException;

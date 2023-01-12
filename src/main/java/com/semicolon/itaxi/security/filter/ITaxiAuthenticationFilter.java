@@ -57,5 +57,7 @@ public class ITaxiAuthenticationFilter extends UsernamePasswordAuthenticationFil
         tokens.put("access_token", accessToken);
         tokens.put("refresh_token", generateRefreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
+        mapper.writeValue(response.getOutputStream(), tokens);
+
     }
 }

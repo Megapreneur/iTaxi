@@ -1,9 +1,8 @@
 package com.semicolon.itaxi.exceptions;
 
-import org.springframework.http.HttpStatus;
 
 public class InvalidUserException extends ITaxiException {
-    public InvalidUserException(String message, HttpStatus status) {
-        super(message, status);
+    public InvalidUserException(String message) {
+        super(message);
     }
 }

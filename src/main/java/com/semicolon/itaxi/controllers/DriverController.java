@@ -53,6 +53,33 @@ public class DriverController {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
+    @PostMapping("/driver/verify?token")
+    public ResponseEntity<?>verifyDriver(@RequestParam String token) throws ITaxiException {
+        driverService.verifyDriver(token);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status("Okay")
+                .message("Verification is successful")
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
+    }
+    @PatchMapping("/driver/forget-password")
+    public ResponseEntity<?>forgetPassword(@RequestParam String email) throws ITaxiException {
+        driverService.driverForgetPassword(email);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status("Okay")
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/driver/verify-driver-forget-password")
+    public ResponseEntity<?>verifyDriverForgetPassword(@RequestParam String token, @RequestParam String password) throws ITaxiException {
+        driverService.verifyForgetPasswordDriver(token, password);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status("Okay")
+                .message("Verification is successful")
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
+    }
 
     @PostMapping("/driver/registerYourCar")
     public ResponseEntity<?> registerVehicle(@RequestBody RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException {

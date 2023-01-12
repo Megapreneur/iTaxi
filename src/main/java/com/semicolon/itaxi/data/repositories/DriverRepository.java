@@ -10,17 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-
 public interface DriverRepository extends JpaRepository<Driver, Long> {
     boolean existsByEmail(String email);
-
     List<Driver> findByLocation(String location);
-
-//    List<Driver> findByDriverStatus(DriverStatus driverStatus);
-
     Optional<Driver> findByEmail(String email);
-
-//    @Query(value = "SELECT new com.semicolon.itaxi.dto.response.DriverDto (driver.name, driver.phoneNumber, car.carColour, car.carModel, car.carNumber)from Drivers driver JOIN cars car")
-//    DriverDto getDriverDetails(Driver driver);
-
 }

@@ -1,43 +1,22 @@
 package com.semicolon.itaxi.services;
 
-import com.semicolon.itaxi.dto.requests.*;
+import com.semicolon.itaxi.dto.requests.RegisterDriverRequest;
+import com.semicolon.itaxi.dto.requests.RegisterUserRequest;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmailNotificationServiceImpl implements EmailNotificationService{
+
+    @Value("${app.baseUrl}")
     private String baseUrl;
-    private final JavaMailSender javaMailSender;
-//    @Override
-//    public String sendHtmlMail(EmailNotificationRequest emailNotification) throws MessagingException {
-//        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-//        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
-//
-//        try {
-//            mimeMessageHelper.setFrom("no-reply@email.iTaxi.com.ng");
-//            mimeMessageHelper.setTo(emailNotification.getUserEmail());
-//            mimeMessageHelper.setText(
-//                    ""
-//            );
-//            javaMailSender.send(mimeMessage);
-//            return String.format("email sent to %s successfully", emailNotification.getUserEmail());
-//        } catch (MessagingException e) {
-//            e.printStackTrace();
-//        }
-//        return String.format("email not sent to %s", emailNotification.getUserEmail());
-//    }
-//
-//    @Override
-//    public String send(NotificationRequest notificationRequest) {
-//        return null;
-//    }
+    private JavaMailSender javaMailSender;
+
 
     @Override
     public void sendWelcomeMessageToCustomer(RegisterUserRequest userDto, String token) {
@@ -65,8 +44,6 @@ public class EmailNotificationServiceImpl implements EmailNotificationService{
                 "We offer you a chance to make money at your leisure time and your safety is our priority. We hope you enjoy every trip with us.\n" +
                         " Please click on the link below to continue" + "\n" + link);
         javaMailSender.send(mailMessage);
-
-
     }
 
     @Override
