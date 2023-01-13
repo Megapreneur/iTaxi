@@ -30,7 +30,6 @@ public class EmailNotificationServiceImpl implements EmailNotificationService{
                 "For your seamless movement across any where in the country, your safety is our priority. We hope you enjoy every trip with us.\n" +
                         " Please click on the link below to continue" + "\n" + link);
         javaMailSender.send(mailMessage);
-
     }
 
     @Override
