@@ -22,14 +22,14 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/iTaxi")
+@RequestMapping("/api/v1/iTaxi/driver")
 public class DriverController {
     private final DriverService driverService;
 
     public DriverController(DriverService driverService){
         this.driverService = driverService;
     }
-    @PostMapping("/driver/register")
+    @PostMapping("/register")
     public ResponseEntity<?>createDriver(@RequestBody @Valid @NotNull RegisterDriverRequest registerDriverRequest) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         log.info("Account Creation Request ==> {}", registerDriverRequest);
         RegisterDriverResponse driverDto = driverService.register(registerDriverRequest);
@@ -42,7 +42,7 @@ public class DriverController {
         log.info("Returning response");
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
-    @PutMapping("/driver/login")
+    @PutMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDriverRequest request) throws InvalidDriverException, IncorrectPasswordException {
         LoginDriverResponse driverDto = driverService.login(request);
         ApiResponse apiResponse = ApiResponse
@@ -53,7 +53,7 @@ public class DriverController {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
-    @PostMapping("/driver/verify?token")
+    @PostMapping("/verify?token")
     public ResponseEntity<?>verifyDriver(@RequestParam String token) throws ITaxiException {
         driverService.verifyDriver(token);
         ApiResponse apiResponse = ApiResponse.builder()
@@ -62,7 +62,7 @@ public class DriverController {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
-    @PatchMapping("/driver/forget-password")
+    @PatchMapping("/forget-password")
     public ResponseEntity<?>forgetPassword(@RequestParam String email) throws ITaxiException {
         driverService.driverForgetPassword(email);
         ApiResponse apiResponse = ApiResponse.builder()
@@ -71,7 +71,7 @@ public class DriverController {
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/driver/verify-driver-forget-password")
+    @PutMapping("/verify-driver-forget-password")
     public ResponseEntity<?>verifyDriverForgetPassword(@RequestParam String token, @RequestParam String password) throws ITaxiException {
         driverService.verifyForgetPasswordDriver(token, password);
         ApiResponse apiResponse = ApiResponse.builder()
@@ -81,7 +81,7 @@ public class DriverController {
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/driver/registerYourCar")
+    @PostMapping("/registerYourCar")
     public ResponseEntity<?> registerVehicle(@RequestBody RegisterVehicleRequest request) throws InvalidDriverException, InvalidActionException {
         RegisterVehicleResponse driverDto = driverService.registerVehicle(request);
         ApiResponse apiResponse = ApiResponse

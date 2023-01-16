@@ -62,7 +62,7 @@ public class DriverServiceImpl implements DriverService{
 
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
-        if (isValidEmail(request.getEmail())){
+        if (isValidEmail(request.getEmail().toLowerCase())){
             if (driverRepository.existsByEmail(request.getEmail().toLowerCase())) throw  new UserExistException("User Already Exist");
             if(request.getPassword().equals(request.getConfirmPassword())) {
                 Driver driver = modelMapper.map(request, Driver.class);
@@ -91,12 +91,12 @@ public class DriverServiceImpl implements DriverService{
         TokenVerification savedToken = tokenVerificationRepository.findByToken(token)
                 .orElseThrow(() -> new ITaxiException("Token is invalid"));
 
-        Optional<Driver> driver = driverRepository.findByEmail(savedToken.getUserEmail());
+        Optional<Driver> driver = driverRepository.findByEmail(savedToken.getUserEmail().toLowerCase());
         Calendar calendar = Calendar.getInstance();
         if((savedToken.getExpiresAt().getTime() - calendar.getTime().getTime()) <= 0){
             tokenVerificationRepository.delete(savedToken);
             String newOtp = personService.generateToken(driver.get().getEmail());
-            notificationService.newTokenMail(driver.get().getEmail(), newOtp);
+            notificationService.newTokenMail(driver.get().getEmail().toLowerCase(), newOtp);
             log.warn("Token has expired, please check your email for another token");
             throw new ITaxiException("Token has expired, please check your email for another token");
         }else{
@@ -128,7 +128,7 @@ public class DriverServiceImpl implements DriverService{
         if((savedToken.getExpiresAt().getTime() - cal.getTime().getTime()) <= 0){
             tokenVerificationRepository.delete(savedToken);
             String newOtp = personService.generateToken(driver.get().getEmail().toLowerCase());
-            notificationService.sendResetPasswordMail(driver.get().getEmail(), newOtp);
+            notificationService.sendResetPasswordMail(driver.get().getEmail().toLowerCase(), newOtp);
             log.warn("Token has expired, please check your email for another token");
         }else{
             driver.get().setEnabled(true);
@@ -179,7 +179,7 @@ public class DriverServiceImpl implements DriverService{
     @Override
     public LoginDriverResponse login(LoginDriverRequest request) throws InvalidDriverException{
         Optional<Driver> driver = driverRepository.findByEmail(request.getEmail().toLowerCase());
-        if (driver.isPresent()){
+        if (driver.isPresent() && passwordEncoder.matches(request.getPassword(), driver.get().getPassword())){
             driver.get().setDriverStatus(request.getDriverStatus());
             driver.get().setLocation(request.getLocation());
             driverRepository.save(driver.get());

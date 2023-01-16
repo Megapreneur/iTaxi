@@ -21,7 +21,7 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @PostMapping("admin/register")
+    @PostMapping("/admin/register")
     public ResponseEntity<?> register(RegisterUserRequest request) throws MismatchedPasswordException, UserExistException, InvalidEmailException {
         RegisterUserResponse response = adminService.register(request);
         ApiResponse apiResponse = ApiResponse.builder()

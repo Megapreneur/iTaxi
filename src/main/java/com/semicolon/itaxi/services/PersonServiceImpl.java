@@ -30,9 +30,9 @@ public class PersonServiceImpl implements PersonService{
 
     @Override
     public LoginUserResponse login(LoginUserRequest request) {
-        Optional<Admin> admin = adminRepository.findByEmail(request.getEmail());
+        Optional<Admin> admin = adminRepository.findByEmail(request.getEmail().toLowerCase());
         if(admin.isPresent() && passwordEncoder.matches(request.getPassword(), admin.get().getPassword())) return response(admin.get());
-        Optional<User> user = userRepository.findByEmail(request.getEmail());
+        Optional<User> user = userRepository.findByEmail(request.getEmail().toLowerCase());
         if (user.isPresent() && passwordEncoder.matches(request.getPassword(), user.get().getPassword())) return response(user.get());
         throw new UsernameNotFoundException("Invalid User Details");
     }
